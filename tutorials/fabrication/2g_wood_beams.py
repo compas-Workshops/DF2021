@@ -7,6 +7,7 @@ import random
 from compas.geometry import Polygon, Polyline
 from compas.geometry import offset_polyline
 from compas.geometry import cross_vectors, normalize_vector, scale_vector, add_vectors
+from compas.geometry import dot_vectors, subtract_vectors
 from compas.datastructures import Mesh
 from compas.datastructures import mesh_flip_cycles
 from compas.utilities import flatten
@@ -41,6 +42,13 @@ points = mesh.vertices_attributes('xyz', keys=loop_vertices)
 polyline = Polyline(points)
 origin_local, xaxis_local, yaxis_local = bestfit(polyline)
 zaxis_local = normalize_vector(cross_vectors(xaxis_local, yaxis_local))
+
+# check polyline direction
+polyline_vec = subtract_vectors(points[-1], points[0])
+cross_vec = cross_vectors(polyline_vec, zaxis_local)
+if dot_vectors(cross_vec, [0, 0, 1]) <0:
+    zaxis_local = scale_vector(zaxis_local, -1)
+print(zaxis_local)
 
 # gap for hooks
 gap = 0.1

@@ -12,7 +12,6 @@ from compas_rhino.artists import MeshArtist
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-#FILE_I = os.path.join(HERE, 'corrugation_fofin.json')
 FILE_I = os.path.join(HERE, 'bridge_fofin.json')
 
 mesh = Mesh.from_json(FILE_I)

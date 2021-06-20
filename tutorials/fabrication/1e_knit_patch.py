@@ -17,7 +17,7 @@ FILE_I = os.path.join(HERE, 'corrugation_patches.json')
 
 mesh = Mesh.from_json(FILE_I)
 
-# TODO: output patch?
+# TODO: load edge cable 
 
 
 # ==============================================================================

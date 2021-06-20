@@ -6,7 +6,9 @@ import random
 
 from compas.geometry import Polygon, Polyline
 from compas.geometry import offset_polyline
-from compas.geometry import cross_vectors, normalize_vector
+from compas.geometry import cross_vectors, dot_vectors
+from compas.geometry import normalize_vector, scale_vector
+from compas.geometry import add_vectors, subtract_vectors
 from compas.datastructures import Mesh
 from compas.utilities import flatten
 from compas.rpc import Proxy
@@ -40,14 +42,23 @@ polyline = Polyline(points)
 origin_local, xaxis_local, yaxis_local = bestfit(polyline)
 zaxis_local = normalize_vector(cross_vectors(xaxis_local, yaxis_local))
 
-# offset the polyline
+# check polyline direction
+polyline_vec = subtract_vectors(points[-1], points[0])
+cross_vec = cross_vectors(polyline_vec, zaxis_local)
+if dot_vectors(cross_vec, [0, 0, 1]) <0:
+    zaxis_local = scale_vector(zaxis_local, -1)
+print(zaxis_local)
+
+# gap for hooks
+gap = 0.1
 dis = 0.1 # offset distance
-polyline_off = Polyline(offset_polyline(polyline, -dis, zaxis_local))
+polyline_i = Polyline(offset_polyline(polyline, -gap, zaxis_local))
+polyline_o = Polyline(offset_polyline(polyline_i, -dis, zaxis_local))
 
 # generate 2d mesh
-vertices = polyline.points + polyline_off.points 
+vertices = polyline_i.points + polyline_o.points 
 faces = []
-length = len(polyline.points)
+length = len(polyline_i.points)
 for i in range(length - 1) :
     faces.append([i, i + 1, length + i + 1, length + i])
 beam_2d = Mesh.from_vertices_and_faces(vertices, faces)

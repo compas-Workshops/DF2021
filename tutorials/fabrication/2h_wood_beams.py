@@ -6,7 +6,9 @@ import random
 
 from compas.geometry import Polygon, Polyline
 from compas.geometry import offset_polyline
-from compas.geometry import cross_vectors, normalize_vector, scale_vector, add_vectors, subtract_vectors
+from compas.geometry import cross_vectors, dot_vectors
+from compas.geometry import normalize_vector, scale_vector
+from compas.geometry import add_vectors, subtract_vectors
 from compas.datastructures import Mesh
 from compas.datastructures import mesh_flip_cycles
 from compas.utilities import flatten
@@ -43,7 +45,11 @@ for start in [(638, 842), (948, 576), (1332, 493)]:
     zaxis_local = normalize_vector(cross_vectors(xaxis_local, yaxis_local))
 
     # check polyline direction
-    polyline_dir = subtract_vectors(points[-1], points[0])
+    polyline_vec = subtract_vectors(points[-1], points[0])
+    cross_vec = cross_vectors(polyline_vec, zaxis_local)
+    if dot_vectors(cross_vec, [0, 0, 1]) <0:
+        zaxis_local = scale_vector(zaxis_local, -1)
+    print(zaxis_local)
     
     gap = 0.1  # gap for hooks
     dis = 0.1 # offset distance
@@ -110,4 +116,4 @@ artist = MeshArtist(mesh, layer="DF2021:: Base")
 artist.clear_layer()
 artist.draw_faces(join_faces=True)
 artist.draw_edges(color=edgecolor)
-artist.draw_vertexlabels()
+#artist.draw_vertexlabels()

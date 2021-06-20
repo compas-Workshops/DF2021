@@ -4,7 +4,8 @@
 import os
 import random
 
-from compas.utilities import flatten
+from compas.utilities import flatten, pairwise
+from compas.topology import shortest_path
 from compas.datastructures import Mesh
 from compas_rhino.artists import MeshArtist
 
@@ -20,9 +21,15 @@ mesh = Mesh.from_json(FILE_I)
 # ==============================================================================
 # Select faces
 # ==============================================================================
-edges_1 = [(18, 92), (92, 41), (41, 75), (75, 49), (49, 83)]
-edges_2 = [(78, 60), (60, 5), (5, 116), (116, 88), (88,18)]
+start = 1332
+mid = 948
+end = 638
 
+vertices_1 = shortest_path(mesh.adjacency, start, mid)
+vertices_2 = shortest_path(mesh.adjacency, mid, end)
+
+edges_1 = pairwise(vertices_1)
+edges_2 = pairwise(vertices_2)
 patch_1 = []
 patch_2 = []
 
