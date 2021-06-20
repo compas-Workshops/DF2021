@@ -22,7 +22,7 @@ from compas_rhino.artists import PolygonArtist
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-FILE_I = os.path.join(HERE, 'bridge_fofin.json')
+FILE_I = os.path.join(HERE, 'bridge_fofin_add_patch.json')
 # FILE_0 = os.path.join(HERE, 'corrugation_patches.json')
 
 mesh = Mesh.from_json(FILE_I)
@@ -31,9 +31,7 @@ mesh = Mesh.from_json(FILE_I)
 proxy = Proxy('compas.geometry')
 bestfit = proxy.bestfit_frame_numpy
 
-# (638, 842), (248, 576), (1332, 493)
-for start in [(638, 842), (948, 576), (1332, 493)]:
-
+for start in [(1343, 1344), (948, 576), (1422, 1423)]:
     # find the edge loop
     loop = mesh.edge_loop(start)
     loop_vertices = list(flatten(loop)) # not chained
@@ -114,6 +112,6 @@ for (u, v) in loop:
     
 artist = MeshArtist(mesh, layer="DF2021:: Base")
 artist.clear_layer()
-artist.draw_faces(join_faces=True)
+artist.draw_faces(faces=list(mesh.faces_where({'is_knit': True})),join_faces=True)
 artist.draw_edges(color=edgecolor)
 #artist.draw_vertexlabels()

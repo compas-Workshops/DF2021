@@ -64,6 +64,7 @@ edgecolor = {key: cmap(f) for key, f in zip(cablenet.edges(), forces)}
 
 artist = CablenetArtist(cablenet)
 artist.clear_layer()
+artist.draw_reactions()
 artist.draw_vertices(color={vertex: (255, 0, 0) for vertex in cablenet.vertices_where({'is_anchor': True})})
 artist.draw_edges()
 artist.draw_faces()

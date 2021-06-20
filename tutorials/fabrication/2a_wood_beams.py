@@ -17,7 +17,7 @@ from compas_rhino.artists import PolylineArtist
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-FILE_I = os.path.join(HERE, 'bridge_fofin.json')
+FILE_I = os.path.join(HERE, 'bridge_fofin_add_patch.json')
 # FILE_0 = os.path.join(HERE, 'corrugation_patches.json')
 
 mesh = Mesh.from_json(FILE_I)
@@ -27,7 +27,8 @@ proxy = Proxy('compas.geometry')
 bestfit = proxy.bestfit_frame_numpy
 
 # (18, 31), (78, 87), (83, 73)
-start = (638, 842)
+#start = (638, 842)
+start = (1343, 1344)
 
 # find the edge loop
 loop = mesh.edge_loop(start)
@@ -61,6 +62,6 @@ for (u, v) in loop:
 
 artist = MeshArtist(mesh, layer="DF2021:: KnitPatch")
 artist.clear_layer()
-artist.draw_faces(join_faces=True)
+artist.draw_faces(faces=list(mesh.faces_where({'is_knit': True})),join_faces=True)
 artist.draw_edges(color=edgecolor)
 artist.draw_vertexlabels()
