@@ -13,8 +13,8 @@ from compas_rhino.artists import MeshArtist
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-FILE_I = os.path.join(HERE, 'corrugation_fofin.json')
-FILE_0 = os.path.join(HERE, 'corrugation_patches.json')
+FILE_I = os.path.join(HERE, 'bridge_fofin.json')
+FILE_0 = os.path.join(HERE, 'bridge_fofin_patches.json')
 
 mesh = Mesh.from_json(FILE_I)
 
@@ -46,7 +46,7 @@ for start in edges_2:
 # ==============================================================================
 # Set face attributes
 # ==============================================================================
-mesh._default_face_attributes({'patch': None})
+mesh.update_default_face_attributes({'patch': None})
 for face in patch_1:
     if face:
         mesh.face_attribute(face, 'patch', 1)
