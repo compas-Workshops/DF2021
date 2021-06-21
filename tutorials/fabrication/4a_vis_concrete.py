@@ -33,7 +33,7 @@ for vkey in mesh.vertices():
     xyz = mesh.vertex_coordinates(vkey)
     v_normal = mesh.vertex_normal(vkey)
 
-    up = scale_vector(v_normal, 0.5 * thickness)
+    up = scale_vector(v_normal, thickness)
 
     mesh_up.vertex_attributes(vkey, 'xyz', add_vectors(xyz, up))
 
@@ -63,4 +63,4 @@ for a, b in pairwise(boundary):
 artist = MeshArtist(concrete, layer="DF2021:: Concrete")
 # artist.clear_layer()
 artist.draw_faces(join_faces=True)
-artist.draw_edges()
+#artist.draw_edges()
