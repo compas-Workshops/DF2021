@@ -26,7 +26,7 @@ bdr_patch_dis = 0.05
 
 mesh.update_default_face_attributes({'is_knit': True, 'hook': False})
 
-for start in [(638, 842), (1332, 493)]:
+for start in [(638, 842),  (948, 576), (1332, 493)]:
     # find the edge loop
     loop = mesh.edge_loop(start)
     bdr_faces = []

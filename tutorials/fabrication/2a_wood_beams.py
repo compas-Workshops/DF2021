@@ -17,7 +17,7 @@ from compas_rhino.artists import PolylineArtist
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-FILE_I = os.path.join(HERE, 'bridge_fofin_add_patch.json')
+FILE_I = os.path.join(HERE, 'bridge_fofin_reactions.json')
 # FILE_0 = os.path.join(HERE, 'corrugation_patches.json')
 
 mesh = Mesh.from_json(FILE_I)
@@ -26,9 +26,8 @@ mesh = Mesh.from_json(FILE_I)
 proxy = Proxy('compas.geometry')
 bestfit = proxy.bestfit_frame_numpy
 
-# (18, 31), (78, 87), (83, 73)
-#start = (638, 842)
-start = (1343, 1344)
+#start = (1343, 1344)
+start= (638, 842)
 
 # find the edge loop
 loop = mesh.edge_loop(start)
