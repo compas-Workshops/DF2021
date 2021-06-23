@@ -79,7 +79,7 @@ dva = {
     'rz': 0.0,            # Z-component of an residual force.
     'px': 0.0,            # X-component of an externally applied load.
     'py': 0.0,            # Y-component of an externally applied load.
-    'pz': -0.1,            # Z-component of an externally applied load. # NEW!
+    'pz': -0.1,           # Z-component of an externally applied load. > NEW!
     'is_anchor': False,   # Indicate that a vertex is anchored and can take reaction forces in XYZ.  # noqa: E501
 }
 mesh.update_default_vertex_attributes(dva)
@@ -119,4 +119,4 @@ artist.draw_faces()
 draw_reactions(mesh, baselayer=baselayer)
 draw_residuals(mesh, baselayer=baselayer)
 draw_forces(mesh, baselayer=baselayer)
-draw_loads(mesh, baselayer=baselayer)
+draw_loads(mesh, baselayer=baselayer, scale=2)

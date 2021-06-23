@@ -101,4 +101,42 @@ def draw_loads(mesh, baselayer, color=(0, 255, 0), scale=1):
 # ==============================================================================
 
 if __name__ == '__main__':
-    pass
+
+    import os
+    from compas.datastructures import Mesh
+
+    from compas_rhino.artists import MeshArtist
+
+    # ==============================================================================
+    # Initialise
+    # ==============================================================================
+
+    HERE = os.path.dirname(__file__)
+    DATA = os.path.abspath(os.path.join(HERE, '..', 'data'))
+    FILE_I = os.path.join(DATA, 'cablemesh_fofin_simple.json')
+
+    # create the mesh from imported geometry
+    mesh = Mesh.from_json(FILE_I)
+
+    # add artificial residual and external loads
+    for key, attr in mesh.vertices_where({'is_anchor': False}, True):
+        attr['pz'] = -0.2
+        attr['rz'] = 0.2
+
+    # ==============================================================================
+    # Visualize
+    # ==============================================================================
+
+    baselayer = "DF21_C2::03_Visualisation"
+
+    artist = MeshArtist(mesh, layer=baselayer+"::Mesh")
+    artist.clear_layer()
+
+    artist.draw_vertices(color={vertex: (255, 0, 0) for vertex in mesh.vertices_where({'is_anchor': True})})  # noqa: E501
+    artist.draw_edges()
+    artist.draw_faces()
+
+    draw_reactions(mesh, baselayer=baselayer)
+    draw_residuals(mesh, baselayer=baselayer)
+    draw_forces(mesh, baselayer=baselayer)
+    draw_loads(mesh, baselayer=baselayer)
