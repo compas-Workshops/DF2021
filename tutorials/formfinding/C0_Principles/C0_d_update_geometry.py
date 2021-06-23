@@ -6,7 +6,7 @@ from compas_rhino.artists import NetworkArtist
 
 
 # ==============================================================================
-# helper functions > NEW
+# helpers > NEW
 # ==============================================================================
 
 def update_residuals(network):
@@ -53,16 +53,12 @@ network.add_edge(c, e)
 network.add_edge(d, e)
 
 
-# ==============================================================================
-# compute the residual forces in the current geometry
-# ==============================================================================
-
-update_residuals(network)
-
 
 # ==============================================================================
 # move free nodes in direction of residual > NEW
 # ==============================================================================
+# compute residuals in the initial geometry
+update_residuals(network)
 
 for node in network.nodes_where({'is_anchor': False}):
     rx, ry, rz = network.node_attributes(node, ['rx', 'ry', 'rz'])
@@ -74,7 +70,7 @@ for node in network.nodes_where({'is_anchor': False}):
 
 
 # ==============================================================================
-# recompute all residuals in the new geometry
+# recompute residuals in the updated geometry
 # ==============================================================================
 
 update_residuals(network)

@@ -1,18 +1,26 @@
 from compas.geometry import add_vectors, subtract_vectors, length_vector
 from compas.datastructures import Network
+from compas.numerical import dr
 
 import compas_rhino
 from compas_rhino.artists import NetworkArtist
 
 
+
+# PLACEHOLDER
+# TODO implement numerical solver for dynamic relaxation
+
+
 # ==============================================================================
-# helpers > NEW (refactoring of code)
+# helper functions
 # ==============================================================================
 
 def update_residuals(network):
     for node in network.nodes():
         A = network.node_attributes(node, 'xyz')
-        R = [0, 0, 0]
+        # external loads P as contribution to nodal residuals
+        # R = P + F * cos(XYZ)
+        R = network.node_attributes(node, ['px', 'py', 'pz'])
         for nbr in network.neighbors(node):
             B = network.node_attributes(nbr, 'xyz')
 
@@ -68,6 +76,21 @@ def draw_residuals(network, layer, color, tol):
     compas_rhino.draw_lines(lines, layer=layer)
 
 
+def draw_loads(network, layer, color):
+    lines = []
+    for node in network.nodes_where({'is_anchor': False}):
+        start = network.node_attributes(node, 'xyz')
+        load = network.node_attributes(node, ['px', 'py', 'pz'])
+        end = add_vectors(start, load)
+        lines.append(
+            {'start': start,
+            'end': end,
+            'arrow': 'end',
+            'color': color})
+    compas_rhino.draw_lines(lines, layer=layer)
+
+
+
 # ==============================================================================
 # create a network
 # ==============================================================================
@@ -77,20 +100,19 @@ network = Network()
 
 network.update_dna(is_anchor=False)
 network.update_dna(rx=0, ry=0, rz=0)
+network.update_dna(px=0, py=0, pz=0)
 network.update_dea(f=1)
 
 a = network.add_node(x=0, y=0, z=0, is_anchor=True)
-b = network.add_node(x=10, y=0, z=10, is_anchor=True)
-# try with a longer edge instead:
-# b = network.add_node(x=20, y=-10, z=20, is_anchor=True)
+b = network.add_node(x=20, y=-10, z=10, is_anchor=True)
 c = network.add_node(x=10, y=10, z=0, is_anchor=True)
 d = network.add_node(x=0, y=10, z=10, is_anchor=True)
 
 e = network.add_node(x=5, y=5, z=0)
+# add external load vector to the free node
+network.node_attributes(e, ['px', 'py', 'pz'], [0, 0, -2])
 
 network.add_edge(a, e)
-# try with a higher force instead:
-# network.add_edge(a, e, f=2)
 network.add_edge(b, e)
 network.add_edge(c, e)
 network.add_edge(d, e)
@@ -110,7 +132,7 @@ artist = NetworkArtist(network, layer=layer)
 
 
 # ==============================================================================
-# iterative equilibrium > NEW
+# iterative equilibrium finding
 # ==============================================================================
 # define maximum iterations and tolerance for residuals
 tol = 0.01
@@ -120,15 +142,29 @@ kmax = 100
 update_residuals(network)
 
 for k in range(kmax):
+
+    # stopping criteria
     R = network.nodes_attributes(['rx', 'ry', 'rz'], keys=free)
     res = sum(length_vector(r) for r in R)
-    # stopping criterion
-    if res < tol:
-        break
+    if k % 10 == 0:
+        if res < tol:
+            break
 
-    # update the geometry based on the residuals of the previous step
+    # visualize the iterative process
+    if k % 5 == 0:
+        artist.draw_nodes(color={node: (255, 0, 0) for node in fixed})
+        artist.draw_edges()
+
+        draw_reactions(network, layer, (0, 255, 0))
+        draw_residuals(network, layer, (0, 255, 255), tol)
+        draw_loads(network, layer, (255, 0, 0))
+
+        compas_rhino.rs.Redraw()
+        compas_rhino.wait()
+
+    # update the geometry based on the previous residuals
     update_geometry(network)
-    # recompute the residuals in the new geometry
+    # then recompute the residuals in the new geometry
     update_residuals(network)
 
 
@@ -136,8 +172,10 @@ for k in range(kmax):
 # visualization
 # ==============================================================================
 
+compas_rhino.clear()
 artist.draw_nodes(color={node: (255, 0, 0) for node in network.nodes_where({'is_anchor': True})})
 artist.draw_edges()
 
 draw_reactions(network, layer, (0, 255, 0))
 draw_residuals(network, layer, (0, 255, 255), tol)
+draw_loads(network, layer, (255, 0, 0))

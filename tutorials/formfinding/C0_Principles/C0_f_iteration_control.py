@@ -6,7 +6,7 @@ from compas_rhino.artists import NetworkArtist
 
 
 # ==============================================================================
-# helper functions
+# helpers
 # ==============================================================================
 
 def update_residuals(network):
@@ -80,7 +80,7 @@ network.update_dna(rx=0, ry=0, rz=0)
 network.update_dea(f=1)
 
 a = network.add_node(x=0, y=0, z=0, is_anchor=True)
-b = network.add_node(x=20, y=-10, z=10, is_anchor=True)
+b = network.add_node(x=10, y=0, z=10, is_anchor=True)
 c = network.add_node(x=10, y=10, z=0, is_anchor=True)
 d = network.add_node(x=0, y=10, z=10, is_anchor=True)
 
@@ -106,7 +106,7 @@ artist = NetworkArtist(network, layer=layer)
 
 
 # ==============================================================================
-# iterative equilibrium finding > NEW (iteration control)
+# iterative equilibrium > NEW (iteration control)
 # ==============================================================================
 # define maximum iterations and tolerance for residuals
 tol = 0.01
@@ -116,10 +116,9 @@ kmax = 100
 update_residuals(network)
 
 for k in range(kmax):
-
-    # stopping criteria
     R = network.nodes_attributes(['rx', 'ry', 'rz'], keys=free)
     res = sum(length_vector(r) for r in R)
+    # stopping criterion
     if k % 10 == 0:
         if res < tol:
             break
@@ -135,9 +134,9 @@ for k in range(kmax):
         compas_rhino.rs.Redraw()
         compas_rhino.wait()
 
-    # update the geometry based on the previous residuals
+    # update the geometry based on the residuals of the previous step
     update_geometry(network)
-    # then recompute the residuals in the new geometry
+    # recompute the residuals in the new geometry
     update_residuals(network)
 
 

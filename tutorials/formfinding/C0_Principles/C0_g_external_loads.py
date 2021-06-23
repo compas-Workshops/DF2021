@@ -6,15 +6,17 @@ from compas_rhino.artists import NetworkArtist
 
 
 # ==============================================================================
-# helper functions > NEW (updated for external loads)
+# helpers > NEW (updated for external loads)
 # ==============================================================================
 
 def update_residuals(network):
     for node in network.nodes():
         A = network.node_attributes(node, 'xyz')
+
         # external loads P as contribution to nodal residuals
         # R = P + F * cos(XYZ)
         R = network.node_attributes(node, ['px', 'py', 'pz'])
+
         for nbr in network.neighbors(node):
             B = network.node_attributes(nbr, 'xyz')
 
@@ -98,7 +100,7 @@ network.update_dna(px=0, py=0, pz=0)
 network.update_dea(f=1)
 
 a = network.add_node(x=0, y=0, z=0, is_anchor=True)
-b = network.add_node(x=20, y=-10, z=10, is_anchor=True)
+b = network.add_node(x=10, y=0, z=10, is_anchor=True)
 c = network.add_node(x=10, y=10, z=0, is_anchor=True)
 d = network.add_node(x=0, y=10, z=10, is_anchor=True)
 
@@ -126,7 +128,7 @@ artist = NetworkArtist(network, layer=layer)
 
 
 # ==============================================================================
-# iterative equilibrium finding > NEW (iteration control)
+# iterative equilibrium
 # ==============================================================================
 # define maximum iterations and tolerance for residuals
 tol = 0.01
@@ -156,9 +158,9 @@ for k in range(kmax):
         compas_rhino.rs.Redraw()
         compas_rhino.wait()
 
-    # update the geometry based on the previous residuals
+    # update the geometry based on the residuals of the previous step
     update_geometry(network)
-    # then recompute the residuals in the new geometry
+    # recompute the residuals in the new geometry
     update_residuals(network)
 
 
