@@ -6,15 +6,12 @@ from compas_rhino.artists import NetworkArtist
 
 
 # ==============================================================================
-# helpers > NEW (updated for external loads)
+# helpers > NEW (replace forces / lengths by force densities)
 # ==============================================================================
 
 def update_residuals(network):
     for node in network.nodes():
         A = network.node_attributes(node, 'xyz')
-
-        # external loads P as contribution to nodal residuals
-        # R = P + F * cos(XYZ)
         R = network.node_attributes(node, ['px', 'py', 'pz'])
 
         for nbr in network.neighbors(node):
@@ -24,11 +21,12 @@ def update_residuals(network):
             if not network.has_edge(*edge):
                 edge = nbr, node
 
-            F = network.edge_attribute(edge, 'f')
-            L = network.edge_length(*edge)
-            R[0] += F * (B[0] - A[0]) / L
-            R[1] += F * (B[1] - A[1]) / L
-            R[2] += F * (B[2] - A[2]) / L
+            # F = network.edge_attribute(edge, 'f')
+            # L = network.edge_length(*edge)
+            Q = network.edge_attribute(edge, 'q')
+            R[0] += Q * (B[0] - A[0])
+            R[1] += Q * (B[1] - A[1])
+            R[2] += Q * (B[2] - A[2])
         network.node_attributes(node, ['rx', 'ry', 'rz'], R)
 
 
@@ -88,7 +86,7 @@ def draw_loads(network, layer, color):
 
 
 # ==============================================================================
-# create a network > NEW (external loads)
+# create a network
 # ==============================================================================
 # with 5 nodes and 4 edges
 
@@ -97,7 +95,8 @@ network = Network()
 network.update_dna(is_anchor=False)
 network.update_dna(rx=0, ry=0, rz=0)
 network.update_dna(px=0, py=0, pz=0)
-network.update_dea(f=1)
+# network.update_dea(f=1)
+network.update_dea(q=0.1)
 
 a = network.add_node(x=0, y=0, z=0, is_anchor=True)
 b = network.add_node(x=10, y=0, z=10, is_anchor=True)
@@ -105,8 +104,7 @@ c = network.add_node(x=10, y=10, z=0, is_anchor=True)
 d = network.add_node(x=0, y=10, z=10, is_anchor=True)
 
 e = network.add_node(x=5, y=5, z=0)
-# add external load vector to the free node
-network.node_attributes(e, ['px', 'py', 'pz'], [0, 0, -2])
+network.node_attributes(e, ['px', 'py', 'pz'], [0, 0, -3])
 
 network.add_edge(a, e)
 network.add_edge(b, e)
@@ -155,7 +153,7 @@ for k in range(kmax):
         draw_residuals(network, layer, (0, 255, 255), tol)
         draw_loads(network, layer, (255, 0, 0))
 
-        compas_rhino.rs.Redraw()
+        compas_rhino.clear()
         compas_rhino.wait()
 
     # update the geometry based on the residuals of the previous step

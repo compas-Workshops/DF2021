@@ -6,7 +6,7 @@ from compas_rhino.artists import NetworkArtist
 
 
 # ==============================================================================
-# helper functions > NEW (refactoring of code)
+# helpers > NEW (refactoring of code)
 # ==============================================================================
 
 def update_residuals(network):
@@ -95,9 +95,6 @@ network.add_edge(b, e)
 network.add_edge(c, e)
 network.add_edge(d, e)
 
-fixed = list(network.nodes_where({'is_anchor': True}))
-free = list(network.nodes_where({'is_anchor': False}))
-
 
 # ==============================================================================
 # clear the Rhino model
@@ -110,7 +107,7 @@ artist = NetworkArtist(network, layer=layer)
 
 
 # ==============================================================================
-# iterative equilibrium finding > NEW
+# iterative equilibrium > NEW
 # ==============================================================================
 # define maximum iterations and tolerance for residuals
 tol = 0.01
@@ -120,16 +117,15 @@ kmax = 100
 update_residuals(network)
 
 for k in range(kmax):
-
-    # stopping criteria
     R = network.nodes_attributes(['rx', 'ry', 'rz'], keys=free)
     res = sum(length_vector(r) for r in R)
+    # stopping criterion
     if res < tol:
         break
 
-    # update the geometry based on the previous residuals
+    # update the geometry based on the residuals of the previous step
     update_geometry(network)
-    # then recompute the residuals in the new geometry
+    # recompute the residuals in the new geometry
     update_residuals(network)
 
 
