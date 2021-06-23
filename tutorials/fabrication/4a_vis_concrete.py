@@ -37,7 +37,7 @@ for vkey in mesh.vertices():
 
     mesh_up.vertex_attributes(vkey, 'xyz', add_vectors(xyz, up))
 
-mesh_flip_cycles(mesh_up)
+mesh_flip_cycles(mesh)
 
 concrete = mesh.copy()
 max_int_key = len(list(mesh.vertices()))

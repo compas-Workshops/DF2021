@@ -23,7 +23,6 @@ FILE_I = os.path.join(HERE, 'bridge_fofin_reactions.json')
 
 mesh = Mesh.from_json(FILE_I)
 
-
 proxy = Proxy('compas.geometry')
 bestfit = proxy.bestfit_frame_numpy
 

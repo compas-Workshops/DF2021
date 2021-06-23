@@ -13,16 +13,15 @@ from compas_rhino.artists import MeshArtist
 # ==============================================================================
 HERE = os.path.dirname(__file__)
 FILE_I = os.path.join(HERE, 'bridge_fofin_reactions.json')
-# FILE_O = os.path.join(HERE, 'bridge_fofin_add_patch.json')
 
 mesh = Mesh.from_json(FILE_I)
 
+print(list(mesh.vertices_where({'is_anchor':True})))
+
 radius = 0.008
 lines = []
-for start in [(1332, 493), (30, 1001), (948, 576), (567, 593), (638, 842)]:
-    # find the edge loop
-    loop = mesh.edge_loop(start)
-    for (u, v) in loop:
+for (u, v) in mesh.edges():
+    if mesh.vertex_attribute(u, 'is_anchor') is True and mesh.vertex_attribute(v, 'is_anchor') is True:
         sp, ep = mesh.edge_coordinates(u, v)
         lines.append({
                 'start': sp,

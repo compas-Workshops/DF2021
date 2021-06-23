@@ -37,13 +37,11 @@ for (u, v) in loop:
 edgecolor[start] = (255, 0, 0)
 
 facecolor = {}
-#for face in mesh.faces():
-#    facecolor[face] = (255,255,255)
 for face in strip:
-    facecolor[face] = (255, 200, 200)
+    facecolor[face] = (255, 0, 0)
 
 artist = MeshArtist(mesh, layer="DF2021:: KnitPatch")
 artist.clear_layer()
 artist.draw_faces(color=facecolor)
 artist.draw_edges(color=edgecolor)
-artist.draw_vertexlabels()
+#artist.draw_vertexlabels()

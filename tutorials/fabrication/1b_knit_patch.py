@@ -20,12 +20,16 @@ mesh = Mesh.from_json(FILE_I)
 # ==============================================================================
 # Select faces
 # ==============================================================================
-start = 1332
 mid = 948
-end = 638
 
-vertices_1 = shortest_path(mesh.adjacency, start, mid)
-vertices_2 = shortest_path(mesh.adjacency, mid, end)
+for 
+
+# start = 1332
+# mid = 948
+# end = 638
+
+# vertices_1 = shortest_path(mesh.adjacency, start, mid)
+# vertices_2 = shortest_path(mesh.adjacency, mid, end)
 
 edges_1 = pairwise(vertices_1)
 edges_2 = pairwise(vertices_2)
