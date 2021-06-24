@@ -20,9 +20,35 @@ mesh = Mesh.from_json(FILE_I)
 # ==============================================================================
 # Select faces
 # ==============================================================================
-mid = 948
+m_key = 948
+nbrs = mesh.vertex_neighbors(m_key)
 
-for 
+if len(nbrs) != 3:
+    raise ValueError("Something is wrong...")
+
+for nbr in nbrs:
+    if mesh.is_vertex_on_boundary(nbr) is True:
+        current, previous = (m_key, nbr)
+        edges.append((previous, current))
+        while True:
+            if current == uv[1]:
+                break
+            nbrs = self.vertex_neighbors(current)
+            if len(nbrs) == 2:
+                break
+            nbr = None
+            for temp in nbrs:
+                if temp == previous:
+                    continue
+                if self.is_edge_on_boundary(current, temp):
+                    nbr = temp
+                    break
+            if nbr is None:
+                break
+            previous, current = current, nbr
+            edges.append((previous, current))
+        pass
+    
 
 # start = 1332
 # mid = 948

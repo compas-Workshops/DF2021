@@ -4,14 +4,10 @@ from compas.datastructures import Mesh
 from compas.numerical import dr
 
 from compas_rhino.artists import MeshArtist
-from C2_3_visualisation import draw_reactions
-from C2_3_visualisation import draw_residuals
-from C2_3_visualisation import draw_forces
-from C2_3_visualisation import draw_loads
 
 
 # ==============================================================================
-# Helpers
+# Helpers > NEW
 # ==============================================================================
 
 def fofin(mesh):
@@ -58,7 +54,7 @@ def fofin(mesh):
 
 
 # ==============================================================================
-# Initialise
+# Paths
 # ==============================================================================
 
 HERE = os.path.dirname(__file__)
@@ -66,39 +62,38 @@ DATA = os.path.abspath(os.path.join(HERE, '..', 'data'))
 FILE_I = os.path.join(DATA, 'cablenmesh_import.json')
 
 # ==============================================================================
-# Cablenet mesh datastructure
+# a. Cablenet mesh datastructure
 # ==============================================================================
 
-# create the mesh from imported geometry
+# a1. create the mesh from imported geometry
 mesh = Mesh.from_json(FILE_I)
 
-# set default vertex attributes
+# a2. set default vertex and edge attributes
 dva = {
-    'rx': 0.0,            # X-component of an residual force.
-    'ry': 0.0,            # Y-component of an residual force.
-    'rz': 0.0,            # Z-component of an residual force.
+    'rx': 0.0,            # X-component of a residual force.
+    'ry': 0.0,            # Y-component of a residual force.
+    'rz': 0.0,            # Z-component of a residual force.
     'px': 0.0,            # X-component of an externally applied load.
     'py': 0.0,            # Y-component of an externally applied load.
-    'pz': -0.1,           # Z-component of an externally applied load.
-    'is_anchor': False,   # Indicate that a vertex is anchored and can take reaction forces in XYZ.  # noqa: E501
+    'pz': 0.0,            # Z-component of an externally applied load.
+    'is_anchor': False    # Indicate that a vertex is anchored and can take reaction forces in XYZ.  # noqa: E501
 }
 mesh.update_default_vertex_attributes(dva)
 
-# set default edge attributes
 dea = {
-    'q': 2.0,             # Force densities of an edge. > NEW!
+    'q': 1.0,             # Force densities of an edge.
     'f': 0.0,             # Force in an edge.
     'l': 0.0,             # Stressed Length of an edge.
     'l0': 0.0,            # Unstressed Length of an edge.
 }
 mesh.update_default_edge_attributes(dea)
 
-# Boundary conditions
+# a3. Boundary conditions
 boundary = mesh.vertices_on_boundaries()[0]
 mesh.vertices_attribute('is_anchor', True, keys=boundary)
 
 # ==============================================================================
-# Compute equilibrium and update the geometry
+# c. Compute equilibrium and update the geometry > NEW
 # ==============================================================================
 
 fofin(mesh)
@@ -107,7 +102,7 @@ fofin(mesh)
 # Visualize
 # ==============================================================================
 
-baselayer = "DF21_C2::05 Increased Force Densities"
+baselayer = "DF21_C2::02_Basic Form Finding"
 
 artist = MeshArtist(mesh, layer=baselayer+"::Mesh")
 artist.clear_layer()
@@ -115,8 +110,3 @@ artist.clear_layer()
 artist.draw_vertices(color={vertex: (255, 0, 0) for vertex in mesh.vertices_where({'is_anchor': True})})  # noqa: E501
 artist.draw_edges()
 artist.draw_faces()
-
-draw_reactions(mesh, baselayer=baselayer)
-draw_residuals(mesh, baselayer=baselayer)
-draw_forces(mesh, baselayer=baselayer)
-draw_loads(mesh, baselayer=baselayer, scale=2)

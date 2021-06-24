@@ -86,7 +86,7 @@ mesh.update_default_vertex_attributes(dva)
 
 # set default edge attributes
 dea = {
-    'q': 2.0,             # Force densities of an edge. > NEW!
+    'q': 1.0,             # Force densities of an edge. > NEW: back to 1
     'f': 0.0,             # Force in an edge.
     'l': 0.0,             # Stressed Length of an edge.
     'l0': 0.0,            # Unstressed Length of an edge.
@@ -98,6 +98,17 @@ boundary = mesh.vertices_on_boundaries()[0]
 mesh.vertices_attribute('is_anchor', True, keys=boundary)
 
 # ==============================================================================
+# Centre Cable through Variable Force Densities > NEW
+# ==============================================================================
+
+# a. find center cable to create crease
+center_start = (24, 33)
+center_cable = mesh.edge_loop(center_start)
+
+# b. increase the force densities > NEW
+mesh.edges_attribute('q', 10, keys=center_cable)
+
+# ==============================================================================
 # Compute equilibrium and update the geometry
 # ==============================================================================
 
@@ -107,13 +118,20 @@ fofin(mesh)
 # Visualize
 # ==============================================================================
 
-baselayer = "DF21_C2::05 Increased Force Densities"
+# color the edge loop in green
+edgecolor = {}
+for edge in center_cable:
+    if edge not in mesh.edges():
+        edge = (edge[1], edge[0])
+    edgecolor[edge] = (0, 255, 0)
+
+baselayer = "DF21_C2::06 Variable Force Densities"
 
 artist = MeshArtist(mesh, layer=baselayer+"::Mesh")
 artist.clear_layer()
 
 artist.draw_vertices(color={vertex: (255, 0, 0) for vertex in mesh.vertices_where({'is_anchor': True})})  # noqa: E501
-artist.draw_edges()
+artist.draw_edges(color=edgecolor)
 artist.draw_faces()
 
 draw_reactions(mesh, baselayer=baselayer)

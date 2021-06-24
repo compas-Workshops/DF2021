@@ -4,10 +4,6 @@ from compas.datastructures import Mesh
 from compas.numerical import dr
 from compas.utilities import flatten
 
-from compas.geometry import add_vectors
-from compas.geometry import subtract_vectors
-from compas.geometry import length_vector
-
 from compas_rhino.artists import MeshArtist
 from C2_3_visualisation import draw_reactions
 from C2_3_visualisation import draw_residuals
@@ -62,7 +58,7 @@ def fofin(mesh):
         mesh.edge_attribute(edge, 'l', L[index])
 
 
-def selfweight(mesh):
+def selfweight(mesh):  # b. NEW
     """Compute the selfweight per vertex and update the load attribute in negative z.  # noqa: E501
     """
     density = mesh.attributes['density']
@@ -81,68 +77,6 @@ def selfweight(mesh):
 
         # apply selfweight by updating vertex attribute (acting in negative z)
         attr['pz'] = -selfweight
-
-
-def update_residual(mesh, loads_previous):
-    """Compute the residual forces with respect to the stored loads.
-    """
-    key_index = mesh.key_index()
-
-    R = []
-    for key in mesh.vertices_where({'is_anchor': False}):
-
-        index = key_index[key]
-
-        p_previous = loads_previous[index]
-        p = mesh.vertex_attributes(key, ['px', 'py', 'pz'])
-        r = mesh.vertex_attributes(key, ['rx', 'ry', 'rz'])
-
-        r = add_vectors(r, subtract_vectors(p, p_previous))
-
-        mesh.vertex_attributes(key, ['rx', 'ry', 'rz'], r)
-
-        r_length = length_vector(r)
-        R.append(r_length)
-
-    residuals = sum(R)
-
-    return residuals
-
-
-def fofin_selfweight(mesh):
-    """Compute the equilibrium for the concrete selfweight with the iterative procedure.  # noqa: E501
-    """
-    # define maximum iterations and tolerance for residuals
-    tol = 0.001
-    kmax = 10
-
-    # store previous selfweight loads (zero)
-    loads_previous = mesh.vertices_attributes(('px', 'py', 'pz'))
-    # !!! here already not zero anymore but must at least run one iteration
-
-    # compute selfweight for the current geometry
-    selfweight(mesh)
-
-    # for all k smaller than kmax
-    for k in range(kmax):
-
-        # recompute the residuals with difference of selfweight from updated to previous geometry  # noqa: E501
-        residuals = update_residual(mesh, loads_previous)
-
-        # stopping criteria if updated residual is smaller than tolerance or at least once  # noqa: E501
-        print('k', k, 'residuals', residuals)
-        if residuals < tol and not k == 0:
-            print('Convergence!')
-            break
-
-        # form finding with selfweight loads and geomtry update
-        fofin(mesh)
-
-        # store previous selfweight loads (computed before the updated geometry)  # noqa: E501
-        loads_previous = mesh.vertices_attributes(('px', 'py', 'pz'))
-
-        # recompute selfweight for the updated geometry
-        selfweight(mesh)
 
 
 def longitudinal_cables(mesh):
@@ -189,7 +123,7 @@ DATA = os.path.abspath(os.path.join(HERE, '..', 'data'))
 FILE_I = os.path.join(DATA, 'cablenmesh_import_refined.json')
 
 # ==============================================================================
-# Cablenet mesh datastructure > NEW
+# a. Cablenet mesh datastructure > NEW
 # ==============================================================================
 
 # create the mesh from imported geometry
@@ -249,13 +183,17 @@ mesh.edges_attribute('q', 10, keys=cables[1]+cables[3])
 # Compute equilibrium and update the geometry under changing selfweight # NEW!
 # ==============================================================================
 
-fofin_selfweight(mesh)
+# compute selfweight for the current geometry > b. NEW
+selfweight(mesh)
+
+# form finding with selfweight loads and geometry update
+fofin(mesh)
 
 # ==============================================================================
 # Visualize
 # ==============================================================================
 
-baselayer = "DF21_C2::08 Concrete Selfweight"
+baselayer = "DF21_C2::08 Concrete Selfweight_b"
 
 artist = MeshArtist(mesh, layer=baselayer+"::Mesh")
 artist.clear_layer()

@@ -2,7 +2,6 @@ import os
 
 from compas.datastructures import Mesh
 from compas.numerical import dr
-from compas.utilities import flatten
 
 from compas.geometry import add_vectors
 from compas.geometry import subtract_vectors
@@ -149,12 +148,11 @@ def longitudinal_cables(mesh):
     """Find all cables in the longitudinal direction.
     """
 
-    # Longer Boundary
-    #     select starting corner
+    # select starting corner
     corners = list(mesh.vertices_where({'vertex_degree': 2}))
     corner = corners[0]
 
-    #     check in which direction the edge is shorter
+    # check in which direction the edge is shorter
     corner_edges = mesh.vertex_neighbors(corner)
 
     edgeA = (corner, corner_edges[0])
@@ -189,11 +187,16 @@ DATA = os.path.abspath(os.path.join(HERE, '..', 'data'))
 FILE_I = os.path.join(DATA, 'cablenmesh_import_refined.json')
 
 # ==============================================================================
-# Cablenet mesh datastructure > NEW
+# Cablenet mesh datastructure
 # ==============================================================================
 
 # create the mesh from imported geometry
 mesh = Mesh.from_json(FILE_I)
+
+# ==============================================================================
+# Subdivison > NEW
+# ==============================================================================
+mesh = mesh.subdivide(scheme='quad', k=1)
 
 # set default vertex attributes
 dva = {
@@ -202,22 +205,22 @@ dva = {
     'rz': 0.0,            # Z-component of an residual force.
     'px': 0.0,            # X-component of an externally applied load.
     'py': 0.0,            # Y-component of an externally applied load.
-    'pz': 0.0,            # Z-component of an externally applied load. > NEW: back to 0   # noqa: E501
+    'pz': -0.1,           # Z-component of an externally applied load. # NEW! try with and without!  # noqa: E501
     'is_anchor': False,   # Indicate that a vertex is anchored and can take reaction forces in XYZ.  # noqa: E501
-    't': 0.0535            # Thickness of the concrete shell. > NEW!
+    't': 0.035            # Thickness of the concrete shell. # NEW!
 }
 mesh.update_default_vertex_attributes(dva)
 
 # set default edge attributes
 dea = {
-    'q': 1.0,             # Force densities of an edge.
+    'q': 0.6,             # Force densities of an edge. # NEW: back to 1
     'f': 0.0,             # Force in an edge.
     'l': 0.0,             # Stressed Length of an edge.
     'l0': 0.0,            # Unstressed Length of an edge.
 }
 mesh.update_default_edge_attributes(dea)
 
-# set mesh attributes > NEW!
+# set mesh attributes # NEW!
 mesh.attributes['density'] = 24.0  # Density of the lightweight concrete.
 
 # ==============================================================================
@@ -233,8 +236,8 @@ cables = longitudinal_cables(mesh)
 # external boundary
 boundary = mesh.vertices_on_boundaries()[0]
 
-# find vertices on center continuous edges to create internal boundary
-centre_vertices = list(set(flatten(cables[2])))
+# find center cable to create internal boundary
+centre_vertices = [u for u, v in cables[2*2]]
 
 mesh.vertices_attribute('is_anchor', True, keys=boundary+centre_vertices)
 
@@ -243,7 +246,7 @@ mesh.vertices_attribute('is_anchor', True, keys=boundary+centre_vertices)
 # ==============================================================================
 
 # increase force densities to crease creases
-mesh.edges_attribute('q', 10, keys=cables[1]+cables[3])
+mesh.edges_attribute('q', 36, keys=cables[1*2]+cables[3*2])
 
 # ==============================================================================
 # Compute equilibrium and update the geometry under changing selfweight # NEW!
@@ -255,7 +258,7 @@ fofin_selfweight(mesh)
 # Visualize
 # ==============================================================================
 
-baselayer = "DF21_C2::08 Concrete Selfweight"
+baselayer = "DF21_C2::09 Refinement_qs"
 
 artist = MeshArtist(mesh, layer=baselayer+"::Mesh")
 artist.clear_layer()
@@ -266,5 +269,5 @@ artist.draw_faces()
 
 draw_reactions(mesh, baselayer=baselayer)
 draw_residuals(mesh, baselayer=baselayer)
-draw_forces(mesh, baselayer=baselayer, scale=0.05)
-draw_loads(mesh, baselayer=baselayer, scale=2)
+draw_forces(mesh, baselayer=baselayer)
+draw_loads(mesh, baselayer=baselayer)
