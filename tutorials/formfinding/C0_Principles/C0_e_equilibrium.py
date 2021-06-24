@@ -95,6 +95,9 @@ network.add_edge(b, e)
 network.add_edge(c, e)
 network.add_edge(d, e)
 
+fixed = list(network.nodes_where({'is_anchor': True}))
+free = list(network.nodes_where({'is_anchor': False}))
+
 
 # ==============================================================================
 # clear the Rhino model
