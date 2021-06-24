@@ -33,7 +33,7 @@ def callback_visualize(k, X, crits, args):
         # visualize updated geometry
         artist.draw_nodes(color={node: (255, 0, 0) for node in network.nodes_where({'is_anchor': True})})
         artist.draw_edges()
-        draw_loads(network, layer, (255, 0, 0))
+        #draw_loads(network, layer, (255, 0, 0))
         compas_rhino.rs.Redraw()
         compas_rhino.wait()
 
@@ -91,7 +91,7 @@ network = Network()
 network.update_dna(is_anchor=False)
 network.update_dna(rx=0, ry=0, rz=0)
 network.update_dna(px=0, py=0, pz=0)
-network.update_dea(q=-3.0)
+network.update_dea(q=-5.0)
 
 # linear sequence
 div = 20
