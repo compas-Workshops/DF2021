@@ -74,7 +74,7 @@ def draw_residuals(network, layer, color, tol):
 
 def draw_loads(network, layer, color):
     lines = []
-    for node in network.nodes_where({'is_anchor': False}):
+    for node in network.nodes():
         start = network.node_attributes(node, 'xyz')
         load = network.node_attributes(node, ['px', 'py', 'pz'])
         end = add_vectors(start, load)

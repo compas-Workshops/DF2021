@@ -72,7 +72,7 @@ def draw_residuals(network, layer, color, tol):
 
 def draw_loads(network, layer, color):
     lines = []
-    for node in network.nodes_where({'is_anchor': False}):
+    for node in network.nodes():
         start = network.node_attributes(node, 'xyz')
         load = network.node_attributes(node, ['px', 'py', 'pz'])
         end = add_vectors(start, load)
@@ -104,8 +104,7 @@ c = network.add_node(x=10, y=10, z=0, is_anchor=True)
 d = network.add_node(x=0, y=10, z=10, is_anchor=True)
 
 e = network.add_node(x=5, y=5, z=0)
-# add external load vector to the free node
-network.node_attributes(e, ['px', 'py', 'pz'], [0, 0, -2])
+network.node_attributes(e, ['px', 'py', 'pz'], [0, 0, -3])
 
 network.add_edge(a, e)
 network.add_edge(b, e)
@@ -154,7 +153,7 @@ for k in range(kmax):
         draw_residuals(network, layer, (0, 255, 255), tol)
         draw_loads(network, layer, (255, 0, 0))
 
-        compas_rhino.rs.Redraw()
+        compas_rhino.clear()
         compas_rhino.wait()
 
     # update the geometry based on the residuals of the previous step

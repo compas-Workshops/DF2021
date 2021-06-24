@@ -79,14 +79,14 @@ dva = {
     'rz': 0.0,            # Z-component of an residual force.
     'px': 0.0,            # X-component of an externally applied load.
     'py': 0.0,            # Y-component of an externally applied load.
-    'pz': -0.1,            # Z-component of an externally applied load. # NEW!
+    'pz': -0.1,           # Z-component of an externally applied load.
     'is_anchor': False,   # Indicate that a vertex is anchored and can take reaction forces in XYZ.  # noqa: E501
 }
 mesh.update_default_vertex_attributes(dva)
 
 # set default edge attributes
 dea = {
-    'q': 2.0,             # Force densities of an edge. # NEW!
+    'q': 2.0,             # Force densities of an edge. > NEW!
     'f': 0.0,             # Force in an edge.
     'l': 0.0,             # Stressed Length of an edge.
     'l0': 0.0,            # Unstressed Length of an edge.
@@ -119,4 +119,4 @@ artist.draw_faces()
 draw_reactions(mesh, baselayer=baselayer)
 draw_residuals(mesh, baselayer=baselayer)
 draw_forces(mesh, baselayer=baselayer)
-draw_loads(mesh, baselayer=baselayer)
+draw_loads(mesh, baselayer=baselayer, scale=2)
