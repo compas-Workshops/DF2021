@@ -6,7 +6,6 @@ from compas.numerical import dr
 import compas_rhino
 from compas_rhino.artists import NetworkArtist
 
-
 # ==============================================================================
 # helpers > NEW (callback)
 # ==============================================================================
@@ -81,7 +80,6 @@ def draw_loads(network, layer, color):
             'color': color})
     compas_rhino.draw_lines(lines, layer=layer)
 
-
 # ==============================================================================
 # create a network > NEW (linear sequence)
 # ==============================================================================
@@ -103,7 +101,6 @@ for i in range(div):
     network.add_edge(sp, p)
     sp = p
 
-
 # ==============================================================================
 # numerical data
 # ==============================================================================
@@ -124,7 +121,6 @@ R = network.nodes_attributes(['rx', 'ry', 'rz'])
 P = network.nodes_attributes(['px', 'py', 'pz'])
 Q = network.edges_attribute('q')
 
-
 # ==============================================================================
 # clear the Rhino model
 # ==============================================================================
@@ -133,7 +129,6 @@ Q = network.edges_attribute('q')
 compas_rhino.clear()
 layer = "DF21::C1::FormFinding"
 artist = NetworkArtist(network, layer=layer)
-
 
 # ==============================================================================
 # compute equilibrium > NEW (callback)
@@ -144,7 +139,6 @@ X, Q, F, L, R = dr(X, edges, fixed, P, Q, callback=callback_visualize)
 
 # update network
 update_network()
-
 
 # ==============================================================================
 # visualization

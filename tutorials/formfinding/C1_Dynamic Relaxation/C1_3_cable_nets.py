@@ -7,7 +7,6 @@ from compas.numerical import dr
 import compas_rhino
 from compas_rhino.artists import NetworkArtist
 
-
 # ==============================================================================
 # helpers
 # ==============================================================================
@@ -82,7 +81,6 @@ def draw_loads(network, layer, color):
             'color': color})
     compas_rhino.draw_lines(lines, layer=layer)
 
-
 # ==============================================================================
 # create a network > NEW (square grid cablenet)
 # ==============================================================================
@@ -120,7 +118,6 @@ network.nodes_attribute('z', size * 5, [0, (size + 1) ** 2 - 1])
 for corner in network.nodes_where({'degree': 2}):
     network.node_attribute(corner, 'is_anchor', True)
 
-
 # ==============================================================================
 # numerical data
 # ==============================================================================
@@ -141,7 +138,6 @@ R = network.nodes_attributes(['rx', 'ry', 'rz'])
 P = network.nodes_attributes(['px', 'py', 'pz'])
 Q = network.edges_attribute('q')
 
-
 # ==============================================================================
 # clear the Rhino model
 # ==============================================================================
@@ -150,7 +146,6 @@ Q = network.edges_attribute('q')
 compas_rhino.clear()
 layer = "DF21::C1::FormFinding"
 artist = NetworkArtist(network, layer=layer)
-
 
 # ==============================================================================
 # compute equilibrium > NEW (callback)
@@ -161,7 +156,6 @@ X, Q, F, L, R = dr(X, edges, fixed, P, Q, callback=callback_visualize)
 
 # update network
 update_network()
-
 
 # ==============================================================================
 # visualization
