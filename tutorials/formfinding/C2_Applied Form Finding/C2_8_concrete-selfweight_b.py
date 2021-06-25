@@ -138,7 +138,7 @@ dva = {
     'py': 0.0,            # Y-component of an externally applied load.
     'pz': 0.0,            # Z-component of an externally applied load. > NEW: back to 0   # noqa: E501
     'is_anchor': False,   # Indicate that a vertex is anchored and can take reaction forces in XYZ.  # noqa: E501
-    't': 0.0535            # Thickness of the concrete shell. > NEW!
+    't': 0.035            # Thickness of the concrete shell. > NEW!
 }
 mesh.update_default_vertex_attributes(dva)
 
@@ -183,7 +183,7 @@ mesh.edges_attribute('q', 10, keys=cables[1]+cables[3])
 # Compute equilibrium and update the geometry under changing selfweight # NEW!
 # ==============================================================================
 
-# compute selfweight for the current geometry > b. NEW
+# compute selfweight for the initial geometry > b. NEW
 selfweight(mesh)
 
 # form finding with selfweight loads and geometry update
@@ -203,6 +203,6 @@ artist.draw_edges()
 artist.draw_faces()
 
 draw_reactions(mesh, baselayer=baselayer)
-draw_residuals(mesh, baselayer=baselayer)
+draw_residuals(mesh, baselayer=baselayer, scale=4)
 draw_forces(mesh, baselayer=baselayer, scale=0.05)
-draw_loads(mesh, baselayer=baselayer, scale=2)
+draw_loads(mesh, baselayer=baselayer, scale=4)
