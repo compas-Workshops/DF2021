@@ -143,7 +143,7 @@ for u, v in network.edges():
 # and define the drawing helpers/parameters
 
 compas_rhino.clear()
-layer = "DF21::C0::FormFinding"
+layer = "DF21_C0::FormFinding"
 artist = NetworkArtist(network, layer=layer)
 
 

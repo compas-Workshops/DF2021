@@ -36,7 +36,7 @@ network.add_edge(d, e)
 compas_rhino.clear()
 
 artist = NetworkArtist(network)
-artist.layer = "DF21::C0::FormFinding"
+artist.layer = "DF21_C0::FormFinding"
 
 # color the anchors red
 node_color = {node: (255, 0, 0) for node in network.nodes_where({'is_anchor': True})}

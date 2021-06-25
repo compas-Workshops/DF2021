@@ -54,7 +54,7 @@ for node in network.nodes():
 # clear the Rhino model
 compas_rhino.clear()
 
-layer = "DF21::C0::FormFinding"
+layer = "DF21_C0::FormFinding"
 artist = NetworkArtist(network, layer=layer)
 
 # color the anchors red

@@ -117,7 +117,7 @@ free = list(network.nodes_where({'is_anchor': False}))
 # and define the drawing helpers/parameters
 
 compas_rhino.clear()
-layer = "DF21::C0::FormFinding"
+layer = "DF21_C0::FormFinding"
 artist = NetworkArtist(network, layer=layer)
 
 # ==============================================================================

@@ -127,7 +127,7 @@ Q = network.edges_attribute('q')
 # and define the drawing helpers/parameters
 
 compas_rhino.clear()
-layer = "DF21::C1::FormFinding"
+layer = "DF21_C1::FormFinding"
 artist = NetworkArtist(network, layer=layer)
 
 # ==============================================================================
