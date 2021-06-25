@@ -3,7 +3,6 @@ from compas.datastructures import Network
 import compas_rhino
 from compas_rhino.artists import NetworkArtist
 
-
 # ==============================================================================
 # create a network
 # ==============================================================================
@@ -25,7 +24,6 @@ network.add_edge(a, e)
 network.add_edge(b, e)
 network.add_edge(c, e)
 network.add_edge(d, e)
-
 
 # ==============================================================================
 # visualize the geometry

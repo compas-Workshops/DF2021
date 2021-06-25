@@ -4,7 +4,6 @@ from compas.datastructures import Network
 import compas_rhino
 from compas_rhino.artists import NetworkArtist
 
-
 # ==============================================================================
 # create a network
 # ==============================================================================
@@ -29,7 +28,6 @@ network.add_edge(b, e)
 network.add_edge(c, e)
 network.add_edge(d, e)
 
-
 # ==============================================================================
 # visualize the geometry
 # ==============================================================================
@@ -45,7 +43,6 @@ node_color = {node: (255, 0, 0) for node in network.nodes_where({'is_anchor': Tr
 
 artist.draw_nodes(color=node_color)
 artist.draw_edges()
-
 
 # ==============================================================================
 # visualize the forces > NEW

@@ -4,7 +4,6 @@ from compas.datastructures import Network
 import compas_rhino
 from compas_rhino.artists import NetworkArtist
 
-
 # ==============================================================================
 # create a network
 # ==============================================================================
@@ -29,7 +28,6 @@ network.add_edge(b, e)
 network.add_edge(c, e)
 network.add_edge(d, e)
 
-
 # ==============================================================================
 # compute the residual forces in the current geometry > NEW
 # ==============================================================================
@@ -49,7 +47,6 @@ for node in network.nodes():
         R[2] += F * (B[2] - A[2]) / L
     network.node_attributes(node, ['rx', 'ry', 'rz'], R)
 
-
 # ==============================================================================
 # visualize the geometry > SIMILAR BUT MORE COMPACT
 # ==============================================================================
@@ -63,7 +60,6 @@ artist = NetworkArtist(network, layer=layer)
 # color the anchors red
 artist.draw_nodes(color={node: (255, 0, 0) for node in network.nodes_where({'is_anchor': True})})
 artist.draw_edges()
-
 
 # ==============================================================================
 # visualize the reaction forces > NEW (no more forces)

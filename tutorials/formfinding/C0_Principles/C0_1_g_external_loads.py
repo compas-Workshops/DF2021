@@ -4,7 +4,6 @@ from compas.datastructures import Network
 import compas_rhino
 from compas_rhino.artists import NetworkArtist
 
-
 # ==============================================================================
 # helpers > NEW (updated for external loads)
 # ==============================================================================
@@ -85,8 +84,6 @@ def draw_loads(network, layer, color):
             'color': color})
     compas_rhino.draw_lines(lines, layer=layer)
 
-
-
 # ==============================================================================
 # create a network > NEW (external loads)
 # ==============================================================================
@@ -116,7 +113,6 @@ network.add_edge(d, e)
 fixed = list(network.nodes_where({'is_anchor': True}))
 free = list(network.nodes_where({'is_anchor': False}))
 
-
 # ==============================================================================
 # clear the Rhino model
 # ==============================================================================
@@ -125,7 +121,6 @@ free = list(network.nodes_where({'is_anchor': False}))
 compas_rhino.clear()
 layer = "DF21::C0::FormFinding"
 artist = NetworkArtist(network, layer=layer)
-
 
 # ==============================================================================
 # iterative equilibrium
@@ -162,7 +157,6 @@ for k in range(kmax):
     update_geometry(network)
     # recompute the residuals in the new geometry
     update_residuals(network)
-
 
 # ==============================================================================
 # visualization

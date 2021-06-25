@@ -4,7 +4,6 @@ from compas.datastructures import Network
 import compas_rhino
 from compas_rhino.artists import NetworkArtist
 
-
 # ==============================================================================
 # helpers > NEW
 # ==============================================================================
@@ -26,7 +25,6 @@ def update_residuals(network):
             R[1] += F * (B[1] - A[1]) / L
             R[2] += F * (B[2] - A[2]) / L
         network.node_attributes(node, ['rx', 'ry', 'rz'], R)
-
 
 # ==============================================================================
 # create a network
@@ -52,8 +50,6 @@ network.add_edge(b, e)
 network.add_edge(c, e)
 network.add_edge(d, e)
 
-
-
 # ==============================================================================
 # move free nodes in direction of residual > NEW
 # ==============================================================================
@@ -68,13 +64,11 @@ for node in network.nodes_where({'is_anchor': False}):
     z1 = z0 + 0.5 * rz
     network.node_attributes(node, 'xyz', [x1, y1, z1])
 
-
 # ==============================================================================
 # recompute residuals in the updated geometry
 # ==============================================================================
 
 update_residuals(network)
-
 
 # ==============================================================================
 # visualize the geometry
