@@ -14,11 +14,10 @@ from compas_rhino.artists import MeshArtist
 def mesh_from_rhinosurface():
     """Make a mesh from a Rhino surface.
     """
-    guid = compas_rhino.select_surface()
+    guid = compas_rhino.select_surface(message='select one polysurface')
     surface = RhinoSurface.from_guid(guid)
     mesh = surface.to_compas(Mesh)
     return mesh
-
 
 # ==============================================================================
 # Paths
