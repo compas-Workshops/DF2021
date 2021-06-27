@@ -19,12 +19,13 @@ def mesh_from_rhinosurface():
     mesh = surface.to_compas(Mesh)
     return mesh
 
+
 # ==============================================================================
 # Paths
 # ==============================================================================
 
 HERE = os.path.dirname(__file__)
-DATA = os.path.abspath(os.path.join(HERE, '..', 'data'))
+DATA = os.path.abspath(os.path.join(HERE, '../..', 'data'))
 FILE_O = os.path.join(DATA, 'cablenmesh_import.json')
 
 # ==============================================================================
