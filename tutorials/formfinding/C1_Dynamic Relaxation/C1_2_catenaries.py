@@ -148,6 +148,6 @@ compas_rhino.clear()
 artist.draw_nodes(color={node: (255, 0, 0) for node in network.nodes_where({'is_anchor': True})})
 artist.draw_edges()
 
-draw_reactions(network, layer, (0, 255, 0), scale=0.3)
+draw_reactions(network, layer, (0, 150, 0), scale=0.3)
 draw_residuals(network, layer, (0, 255, 255), 0.01)
 draw_loads(network, layer, (255, 0, 0))
