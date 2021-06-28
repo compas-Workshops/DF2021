@@ -13,9 +13,9 @@ from compas_rhino.artists import MeshArtist
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-FILE_I = os.path.join(HERE, '..', 'data', 'cablenmesh_fofin_patch.json')
-FILE_01 = os.path.join(HERE, '..', 'data', 'cablenmesh_fofin_patch1.json')
-FILE_02 = os.path.join(HERE, '..', 'data', 'cablenmesh_fofin_patch2.json')
+FILE_I = os.path.join(HERE, '..', 'data', 'cablemesh_fofin_patch.json')
+FILE_01 = os.path.join(HERE, '..', 'data', 'cablemesh_fofin_patch1.json')
+FILE_02 = os.path.join(HERE, '..', 'data', 'cablemesh_fofin_patch2.json')
 
 mesh = Mesh.from_json(FILE_I)
 
