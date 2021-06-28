@@ -8,6 +8,7 @@ from compas_rhino.artists import NetworkArtist
 # helpers > NEW
 # ==============================================================================
 
+
 def update_residuals(network):
     for node in network.nodes():
         A = network.node_attributes(node, 'xyz')

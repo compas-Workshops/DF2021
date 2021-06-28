@@ -15,6 +15,7 @@ def update_network():
         network.node_attributes(node, ['x', 'y', 'z'], X[index])
         network.node_attributes(node, ['rx', 'ry', 'rz'], R[index])
 
+
 def update_R():
     for i in range(n):
         R[i] = [0, 0, 0]
@@ -25,6 +26,7 @@ def update_R():
             R[i][0] += q * (b[0] - a[0])
             R[i][1] += q * (b[1] - a[1])
             R[i][2] += q * (b[2] - a[2])
+
 
 def update_X():
     for i in range(n):
@@ -79,11 +81,11 @@ def draw_loads(network, layer, color):
     compas_rhino.draw_lines(lines, layer=layer)
 
 
-
 # ==============================================================================
 # create a network
 # ==============================================================================
 # with 5 nodes and 4 edges
+
 
 network = Network()
 
@@ -103,6 +105,7 @@ network.add_edge(a, e)
 network.add_edge(b, e)
 network.add_edge(c, e)
 network.add_edge(d, e)
+
 
 fixed = list(network.nodes_where({'is_anchor': True}))
 free = list(network.nodes_where({'is_anchor': False}))
