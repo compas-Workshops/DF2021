@@ -148,7 +148,7 @@ centre_vertices = list(set(flatten(cables[2])))
 mesh.vertices_attribute('is_anchor', True, keys=boundary+centre_vertices)
 
 # ==============================================================================
-# b. Side Cables through Variable Force Densities > NEW
+# b. Side Cables through Variable Force Densities
 # ==============================================================================
 
 # increase force densities to crease creases

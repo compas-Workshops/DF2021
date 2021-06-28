@@ -299,3 +299,10 @@ draw_reactions(mesh, baselayer=baselayer)
 draw_residuals(mesh, baselayer=baselayer, scale=4)
 draw_forces(mesh, baselayer=baselayer, scale=0.05)
 draw_loads(mesh, baselayer=baselayer, scale=4)
+
+
+# ==============================================================================
+# d. Export > NEW
+# ==============================================================================
+
+mesh.to_json(FILE_O)
