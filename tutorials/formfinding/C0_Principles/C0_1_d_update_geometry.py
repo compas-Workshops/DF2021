@@ -19,13 +19,14 @@ def update_residuals(network):
             edge = node, nbr
             if not network.has_edge(*edge):
                 edge = nbr, node
-                
+
             F = network.edge_attribute(edge, 'f')
             L = network.edge_length(*edge)
             R[0] += F * (B[0] - A[0]) / L
             R[1] += F * (B[1] - A[1]) / L
             R[2] += F * (B[2] - A[2]) / L
         network.node_attributes(node, ['rx', 'ry', 'rz'], R)
+
 
 # ==============================================================================
 # create a network
@@ -82,7 +83,8 @@ layer = "DF21_C0::FormFinding"
 artist = NetworkArtist(network, layer=layer)
 
 # color the anchor nodes red
-artist.draw_nodes(color={node: (255, 0, 0) for node in network.nodes_where({'is_anchor': True})})
+artist.draw_nodes(color={node: (255, 0, 0) for node in
+                  network.nodes_where({'is_anchor': True})})
 artist.draw_edges()
 
 # ==============================================================================
@@ -101,8 +103,8 @@ for node in network.nodes():
         color = (0, 255, 255)
     lines.append(
         {'start': start,
-        'end': end,
-        'arrow': 'end',
-        'color': color})
+         'end': end,
+         'arrow': 'end',
+         'color': color})
 
 compas_rhino.draw_lines(lines, layer=layer)
