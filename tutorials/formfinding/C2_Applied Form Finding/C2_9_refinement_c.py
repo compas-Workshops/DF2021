@@ -183,8 +183,8 @@ def longitudinal_cables(mesh):
 
 HERE = os.path.dirname(__file__)
 DATA = os.path.abspath(os.path.join(HERE, '../..', 'data'))
-FILE_I = os.path.join(DATA, 'cablenmesh_import_refined.json')
-FILE_O = os.path.join(DATA, 'cablenmesh_fofin_refined.json')
+FILE_I = os.path.join(DATA, 'cablemesh_import_refined.json')
+FILE_O = os.path.join(DATA, 'cablemesh_fofin_refined.json')
 
 # ==============================================================================
 # Cablenet mesh datastructure
@@ -244,11 +244,19 @@ centre_vertices = list(set(flatten(cables[2*factor])))
 mesh.vertices_attribute('is_anchor', True, keys=boundary+centre_vertices)
 
 # ==============================================================================
-# Side Cables through Variable Force Densities
+# c. Side Cables Attributes > NEW
 # ==============================================================================
 
 # increase force densities to crease creases
-mesh.edges_attribute('q', 65, keys=cables[1*factor]+cables[3*factor])
+mesh.edges_attribute('cable', True, keys=cables[1*factor]+cables[3*factor])
+
+# ==============================================================================
+# Side Cables through Variable Force Densities > NEW
+# ==============================================================================
+
+# increase force densities to crease creases
+cables = mesh.edges_where({'cable': True})
+mesh.edges_attribute('q', 65, keys=cables)
 
 # ==============================================================================
 # Compute equilibrium and update the geometry under changing selfweight
@@ -291,9 +299,3 @@ draw_reactions(mesh, baselayer=baselayer)
 draw_residuals(mesh, baselayer=baselayer, scale=4)
 draw_forces(mesh, baselayer=baselayer, scale=0.05)
 draw_loads(mesh, baselayer=baselayer, scale=4)
-
-# ==============================================================================
-# c. Export > NEW
-# ==============================================================================
-
-mesh.to_json(FILE_O)

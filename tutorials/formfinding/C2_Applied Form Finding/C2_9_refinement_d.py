@@ -83,7 +83,7 @@ def selfweight(mesh):
         attr['pz'] = -selfweight
 
 
-def update_residual(mesh, loads_previous):  # c. NEW!
+def update_residual(mesh, loads_previous):
     """Compute the residual forces with respect to the stored loads.
     """
     key_index = mesh.key_index()
@@ -107,6 +107,39 @@ def update_residual(mesh, loads_previous):  # c. NEW!
     residuals = sum(R)
 
     return residuals
+
+
+def fofin_selfweight(mesh):
+    """Compute the equilibrium for the concrete selfweight with the iterative procedure.  # noqa: E501
+    """
+    # define maximum iterations and tolerance for residuals
+    tol = 0.01
+    kmax = 3
+
+    # compute selfweight for the starting geometry
+    selfweight(mesh)
+
+    # for all k smaller than kmax
+    for k in range(kmax):
+
+        # form finding with selfweight loads and geomtry update
+        fofin(mesh)
+
+        # store previous selfweight loads for which the cablemesh was formfound
+        loads_previous = mesh.vertices_attributes(('px', 'py', 'pz'))
+
+        # recompute selfweight for the updated geometry
+        selfweight(mesh)
+
+        # recompute the residuals with difference of selfweight from updated to previous geometry  # noqa: E501
+        residuals = update_residual(mesh, loads_previous)
+
+        # stopping criteria if updated residual is smaller than tolerance or at least once  # noqa: E501
+        if residuals < tol and not k == 0:
+            print('Convergence! at k', k, 'residuals', residuals)
+            break
+        else:
+            print('k', k, 'residuals', residuals)
 
 
 def longitudinal_cables(mesh):
@@ -145,19 +178,25 @@ def longitudinal_cables(mesh):
 
 
 # ==============================================================================
-# Initialise
+# c. Initialise > NEW
 # ==============================================================================
 
 HERE = os.path.dirname(__file__)
 DATA = os.path.abspath(os.path.join(HERE, '../..', 'data'))
 FILE_I = os.path.join(DATA, 'cablemesh_import_refined.json')
+FILE_O = os.path.join(DATA, 'cablemesh_fofin_refined.json')
 
 # ==============================================================================
-# a. Cablenet mesh datastructure > NEW
+# Cablenet mesh datastructure
 # ==============================================================================
 
 # create the mesh from imported geometry
 mesh = Mesh.from_json(FILE_I)
+
+# ==============================================================================
+# a2. Subdivison
+# ==============================================================================
+mesh = mesh.subdivide(scheme='quad', k=2)
 
 # set default vertex attributes
 dva = {
@@ -166,22 +205,22 @@ dva = {
     'rz': 0.0,            # Z-component of an residual force.
     'px': 0.0,            # X-component of an externally applied load.
     'py': 0.0,            # Y-component of an externally applied load.
-    'pz': 0.0,            # Z-component of an externally applied load. > NEW: back to 0   # noqa: E501
+    'pz': 0.0,            # Z-component of an externally applied load.
     'is_anchor': False,   # Indicate that a vertex is anchored and can take reaction forces in XYZ.  # noqa: E501
-    't': 0.035            # Thickness of the concrete shell. > NEW!
+    't': 0.01            # Thickness of the concrete shell.
 }
 mesh.update_default_vertex_attributes(dva)
 
 # set default edge attributes
 dea = {
-    'q': 1.0,             # Force densities of an edge.
+    'q': 0.3,             # Force densities of an edge.
     'f': 0.0,             # Force in an edge.
     'l': 0.0,             # Stressed Length of an edge.
     'l0': 0.0,            # Unstressed Length of an edge.
 }
 mesh.update_default_edge_attributes(dea)
 
-# set mesh attributes > NEW!
+# set mesh attributes
 mesh.attributes['density'] = 24.0  # Density of the lightweight concrete.
 
 # ==============================================================================
@@ -193,48 +232,61 @@ cables = longitudinal_cables(mesh)
 # ==============================================================================
 # Add centre vertices to anchors
 # ==============================================================================
+# a2. density factor
+factor = 4
 
 # external boundary
 boundary = mesh.vertices_on_boundaries()[0]
 
 # find vertices on center continuous edges to create internal boundary
-centre_vertices = list(set(flatten(cables[2])))
+centre_vertices = list(set(flatten(cables[2*factor])))
 
 mesh.vertices_attribute('is_anchor', True, keys=boundary+centre_vertices)
 
 # ==============================================================================
-# Side Cables through Variable Force Densities
+# c. Side Cables Attributes > NEW
 # ==============================================================================
 
 # increase force densities to crease creases
-mesh.edges_attribute('q', 10, keys=cables[1]+cables[3])
+mesh.edges_attribute('cable', True, keys=cables[1*factor]+cables[3*factor])
 
 # ==============================================================================
-# Compute equilibrium and update the geometry under changing selfweight # NEW!
+# Side Cables through Variable Force Densities > NEW
 # ==============================================================================
 
-# compute selfweight for the initial geometry > b. NEW
-selfweight(mesh)
+# increase force densities to crease creases
+cables = mesh.edges_where({'cable': True})
+mesh.edges_attribute('q', 65, keys=cables)
 
-# form finding with selfweight loads and geometry update
-fofin(mesh)
+# ==============================================================================
+# Compute equilibrium and update the geometry under changing selfweight
+# ==============================================================================
 
-# > c. NEW
-# store previous selfweight loads for which the cablemesh was formfound  # noqa: E501
-loads_previous = mesh.vertices_attributes(('px', 'py', 'pz'))
+fofin_selfweight(mesh)
 
-# recompute selfweight for the updated geometry
-selfweight(mesh)
+# ==============================================================================
+# Force Check
+# ==============================================================================
 
-# recompute the residuals with difference of selfweight from updated to previous geometry # noqa: E501
-residuals = update_residual(mesh, loads_previous)
-print(residuals)
+f_max = []
+for edge in mesh.edges():
+    f = mesh.edge_attribute(edge, 'f')
+    f_max.append(abs(f))
+f_max = max(f_max)
+print('f_max', f_max)
+
+pz_sum = []
+for key in mesh.vertices():
+    pz = mesh.vertex_attribute(key, 'pz')
+    pz_sum.append(pz)
+pz_sum = sum(pz_sum)
+print('pz_sum', pz_sum)
 
 # ==============================================================================
 # Visualize
 # ==============================================================================
 
-baselayer = "DF21_C2::08 Concrete Selfweight_c"
+baselayer = "DF21_C2::09 Refinement_b_0.3_65_t1"
 
 artist = MeshArtist(mesh, layer=baselayer+"::Mesh")
 artist.clear_layer()
@@ -247,3 +299,10 @@ draw_reactions(mesh, baselayer=baselayer)
 draw_residuals(mesh, baselayer=baselayer, scale=4)
 draw_forces(mesh, baselayer=baselayer, scale=0.05)
 draw_loads(mesh, baselayer=baselayer, scale=4)
+
+
+# ==============================================================================
+# d. Export > NEW
+# ==============================================================================
+
+mesh.to_json(FILE_O)
