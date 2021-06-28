@@ -11,7 +11,7 @@ from compas_rhino.artists import MeshArtist
 
 HERE = os.path.dirname(__file__)
 DATA = os.path.abspath(os.path.join(HERE, '../..', 'data'))
-FILE_I = os.path.join(DATA, 'cablenmesh_import.json')
+FILE_I = os.path.join(DATA, 'cablemesh_import.json')
 
 # ==============================================================================
 # a. Cablenet mesh datastructure

@@ -99,7 +99,7 @@ def longitudinal_cables(mesh):
 
 HERE = os.path.dirname(__file__)
 DATA = os.path.abspath(os.path.join(HERE, '../..', 'data'))
-FILE_I = os.path.join(DATA, 'cablenmesh_import_refined.json')
+FILE_I = os.path.join(DATA, 'cablemesh_import_refined.json')
 
 # ==============================================================================
 # Cablenet mesh datastructure
@@ -148,7 +148,7 @@ centre_vertices = list(set(flatten(cables[2])))
 mesh.vertices_attribute('is_anchor', True, keys=boundary+centre_vertices)
 
 # ==============================================================================
-# b. Side Cables through Variable Force Densities > NEW
+# b. Side Cables through Variable Force Densities
 # ==============================================================================
 
 # increase force densities to crease creases
