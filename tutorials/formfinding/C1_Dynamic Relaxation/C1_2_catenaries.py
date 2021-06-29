@@ -8,7 +8,7 @@ from compas_rhino.artists import NetworkArtist
 
 
 # ==============================================================================
-# helpers > NEW (callback)
+# helpers
 # ==============================================================================
 
 def update_network():
@@ -135,7 +135,7 @@ layer = "DF21_C1::FormFinding"
 artist = NetworkArtist(network, layer=layer)
 
 # ==============================================================================
-# compute equilibrium > NEW (callback)
+# compute equilibrium
 # ==============================================================================
 
 # calling dynamic relaxation function
