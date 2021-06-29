@@ -1,6 +1,5 @@
 from compas.geometry import conforming_delaunay_triangulation
 from compas.datastructures import Mesh
-# from compas.utilities import geometric_key
 from compas_plotters import MeshPlotter
 
 points = [
@@ -20,17 +19,26 @@ vertices, faces = conforming_delaunay_triangulation(points, angle=30, area=0.3)
 
 mesh = Mesh.from_vertices_and_faces(vertices, faces)
 
-# gkey_key = mesh.gkey_key()
-# key_index = {}
+boundary = mesh.vertices_on_boundary()
+vertex = boundary[-5]
+nbrs = mesh.vertex_neighbors(vertex, ordered=True)
 
-# for index, point in enumerate(points):
-#     gkey = geometric_key(point)
-#     if gkey in gkey_key:
-#         key_index[gkey_key[gkey]] = str(index)
+color = {vertex: (255, 0, 0)}
+color[nbrs[2]] = (255, 0, 0)
+
+prev = vertex
+vertex = nbrs[2]
+
+nbrs = mesh.vertex_neighbors(vertex, ordered=True)
+index = nbrs.index(prev)
+nbrs = nbrs[index:] + nbrs[:index]
+
+text = {}
+for index, nbr in enumerate(nbrs):
+    text[nbr] = str(index)
 
 plotter = MeshPlotter(mesh, figsize=(12, 7.5))
 plotter.defaults['vertex.fontsize'] = 8
 plotter.draw_faces()
-# plotter.draw_vertices(keys=key_index, text=key_index)
-# plotter.draw_vertices()
+plotter.draw_vertices(facecolor=color, text=text, radius=0.1)
 plotter.show()
