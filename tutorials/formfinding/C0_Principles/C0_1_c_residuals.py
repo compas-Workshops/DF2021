@@ -35,20 +35,24 @@ network.add_edge(d, e)
 for node in network.nodes():
     A = network.node_attributes(node, 'xyz')
     R = [0, 0, 0]
+
     for nbr in network.neighbors(node):
         B = network.node_attributes(nbr, 'xyz')
+
         edge = node, nbr
         if not network.has_edge(*edge):
             edge = nbr, node
+
         F = network.edge_attribute(edge, 'f')
         L = network.edge_length(*edge)
         R[0] += F * (B[0] - A[0]) / L
         R[1] += F * (B[1] - A[1]) / L
         R[2] += F * (B[2] - A[2]) / L
+        
     network.node_attributes(node, ['rx', 'ry', 'rz'], R)
 
 # ==============================================================================
-# visualize the geometry > SIMILAR BUT MORE COMPACT
+# visualize the geometry
 # ==============================================================================
 
 # clear the Rhino model

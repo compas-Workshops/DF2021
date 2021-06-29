@@ -144,7 +144,7 @@ for k in range(kmax):
             break
 
     # visualize the iterative process
-    if k % 5 == 0:
+    if k % 10 == 0:
         artist.draw_nodes(color={node: (255, 0, 0) for node in fixed})
         artist.draw_edges()
 
