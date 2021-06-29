@@ -1,11 +1,12 @@
-import compas
-from compas.geometry import add_vectors, length_vector, subtract_vectors, scale_vector
+from compas.geometry import add_vectors, length_vector
+from compas.geometry import subtract_vectors, scale_vector
 from compas.datastructures import Network
 
 from compas.numerical import dr
 
 import compas_rhino
 from compas_rhino.artists import NetworkArtist
+
 
 # ==============================================================================
 # helpers
@@ -31,7 +32,8 @@ def callback_visualize(k, X, crits, args):
             network.node_attributes(node, 'xyz', X[index])
 
         # visualize updated geometry
-        artist.draw_nodes(color={node: (255, 0, 0) for node in network.nodes_where({'is_anchor': True})})
+        artist.draw_nodes(color={node: (255, 0, 0) for node in
+                          network.nodes_where({'is_anchor': True})})
         artist.draw_edges()
         draw_loads(network, layer, (255, 0, 0))
         compas_rhino.rs.Redraw()
@@ -42,13 +44,14 @@ def draw_reactions(network, layer, color, scale=1.0):
     lines = []
     for node in network.nodes_where({'is_anchor': True}):
         start = network.node_attributes(node, 'xyz')
-        react = scale_vector(network.node_attributes(node, ['rx', 'ry', 'rz']), scale)
+        react = scale_vector(network.node_attributes(
+                             node, ['rx', 'ry', 'rz']), scale)
         end = subtract_vectors(start, react)
         lines.append(
             {'start': start,
-            'end': end,
-            'arrow': 'end',
-            'color': color})
+             'end': end,
+             'arrow': 'end',
+             'color': color})
     compas_rhino.draw_lines(lines, layer=layer)
 
 
@@ -62,9 +65,9 @@ def draw_residuals(network, layer, color, tol):
         end = add_vectors(start, residual)
         lines.append(
             {'start': start,
-            'end': end,
-            'arrow': 'end',
-            'color': color})
+             'end': end,
+             'arrow': 'end',
+             'color': color})
     compas_rhino.draw_lines(lines, layer=layer)
 
 
@@ -76,10 +79,11 @@ def draw_loads(network, layer, color):
         end = add_vectors(start, load)
         lines.append(
             {'start': start,
-            'end': end,
-            'arrow': 'end',
-            'color': color})
+             'end': end,
+             'arrow': 'end',
+             'color': color})
     compas_rhino.draw_lines(lines, layer=layer)
+
 
 # ==============================================================================
 # create a network > NEW (square grid cablenet)
@@ -162,7 +166,8 @@ update_network()
 # ==============================================================================
 
 compas_rhino.clear()
-artist.draw_nodes(color={node: (255, 0, 0) for node in network.nodes_where({'is_anchor': True})})
+artist.draw_nodes(color={node: (255, 0, 0) for node in
+                  network.nodes_where({'is_anchor': True})})
 artist.draw_edges()
 # artist.draw_nodelabels()
 

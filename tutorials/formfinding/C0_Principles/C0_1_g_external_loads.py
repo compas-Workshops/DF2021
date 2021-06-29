@@ -4,6 +4,7 @@ from compas.datastructures import Network
 import compas_rhino
 from compas_rhino.artists import NetworkArtist
 
+
 # ==============================================================================
 # helpers > NEW (updated for external loads)
 # ==============================================================================
@@ -49,9 +50,9 @@ def draw_reactions(network, layer, color):
         end = subtract_vectors(start, residual)
         lines.append(
             {'start': start,
-            'end': end,
-            'arrow': 'end',
-            'color': color})
+             'end': end,
+             'arrow': 'end',
+             'color': color})
     compas_rhino.draw_lines(lines, layer=layer)
 
 
@@ -65,9 +66,9 @@ def draw_residuals(network, layer, color, tol):
         end = add_vectors(start, residual)
         lines.append(
             {'start': start,
-            'end': end,
-            'arrow': 'end',
-            'color': color})
+             'end': end,
+             'arrow': 'end',
+             'color': color})
     compas_rhino.draw_lines(lines, layer=layer)
 
 
@@ -79,10 +80,11 @@ def draw_loads(network, layer, color):
         end = add_vectors(start, load)
         lines.append(
             {'start': start,
-            'end': end,
-            'arrow': 'end',
-            'color': color})
+             'end': end,
+             'arrow': 'end',
+             'color': color})
     compas_rhino.draw_lines(lines, layer=layer)
+
 
 # ==============================================================================
 # create a network > NEW (external loads)
@@ -163,7 +165,8 @@ for k in range(kmax):
 # ==============================================================================
 
 compas_rhino.clear()
-artist.draw_nodes(color={node: (255, 0, 0) for node in network.nodes_where({'is_anchor': True})})
+artist.draw_nodes(color={node: (255, 0, 0) for node in
+                  network.nodes_where({'is_anchor': True})})
 artist.draw_edges()
 
 draw_reactions(network, layer, (0, 255, 0))

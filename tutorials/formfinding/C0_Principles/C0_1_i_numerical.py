@@ -15,6 +15,7 @@ def update_network():
         network.node_attributes(node, ['x', 'y', 'z'], X[index])
         network.node_attributes(node, ['rx', 'ry', 'rz'], R[index])
 
+
 def update_R():
     for i in range(n):
         R[i] = [0, 0, 0]
@@ -25,6 +26,7 @@ def update_R():
             R[i][0] += q * (b[0] - a[0])
             R[i][1] += q * (b[1] - a[1])
             R[i][2] += q * (b[2] - a[2])
+
 
 def update_X():
     for i in range(n):
@@ -43,9 +45,9 @@ def draw_reactions(network, layer, color):
         end = subtract_vectors(start, residual)
         lines.append(
             {'start': start,
-            'end': end,
-            'arrow': 'end',
-            'color': color})
+             'end': end,
+             'arrow': 'end',
+             'color': color})
     compas_rhino.draw_lines(lines, layer=layer)
 
 
@@ -59,9 +61,9 @@ def draw_residuals(network, layer, color, tol):
         end = add_vectors(start, residual)
         lines.append(
             {'start': start,
-            'end': end,
-            'arrow': 'end',
-            'color': color})
+             'end': end,
+             'arrow': 'end',
+             'color': color})
     compas_rhino.draw_lines(lines, layer=layer)
 
 
@@ -73,17 +75,17 @@ def draw_loads(network, layer, color):
         end = add_vectors(start, load)
         lines.append(
             {'start': start,
-            'end': end,
-            'arrow': 'end',
-            'color': color})
+             'end': end,
+             'arrow': 'end',
+             'color': color})
     compas_rhino.draw_lines(lines, layer=layer)
-
 
 
 # ==============================================================================
 # create a network
 # ==============================================================================
 # with 5 nodes and 4 edges
+
 
 network = Network()
 
@@ -103,6 +105,7 @@ network.add_edge(a, e)
 network.add_edge(b, e)
 network.add_edge(c, e)
 network.add_edge(d, e)
+
 
 fixed = list(network.nodes_where({'is_anchor': True}))
 free = list(network.nodes_where({'is_anchor': False}))
@@ -125,7 +128,8 @@ X = network.nodes_attributes('xyz')
 R = network.nodes_attributes(['rx', 'ry', 'rz'])
 
 # mapping of node index to indices of all its neighbors
-i_nbrs = {node_index[node]: [node_index[nbr] for nbr in network.neighbors(node)] for node in network.nodes()}
+i_nbrs = {node_index[node]: [node_index[nb] for nb in network.neighbors(node)]
+          for node in network.nodes()}
 
 # mapping of edge tuple to force densities
 ij_fd = {}
@@ -161,7 +165,7 @@ for k in range(kmax):
     if k % 10 == 0:
         if sum(length_vector(R[i]) for i in free) < tol:
             break
-    
+
     # update nested lists of coordinates and residuals
     update_X()
     update_R()
@@ -175,7 +179,8 @@ update_network()
 # ==============================================================================
 
 compas_rhino.clear()
-artist.draw_nodes(color={node: (255, 0, 0) for node in network.nodes_where({'is_anchor': True})})
+artist.draw_nodes(color={node: (255, 0, 0) for node in
+                  network.nodes_where({'is_anchor': True})})
 artist.draw_edges()
 
 draw_reactions(network, layer, (0, 255, 0))
