@@ -11,7 +11,7 @@ nodes = sorted(net.nodes(), key=lambda node: net.node_attributes(node, 'xy'))
 
 plotter = NetworkPlotter(net)
 
-plotter.draw_nodes(facecolor={nodes[0]: (255, 0, 0)})
+plotter.draw_nodes(facecolor={nodes[-1]: (0, 255, 0)})
 plotter.draw_edges()
 
 plotter.show()
