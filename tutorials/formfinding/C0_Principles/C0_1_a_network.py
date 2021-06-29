@@ -36,7 +36,8 @@ artist = NetworkArtist(network)
 artist.layer = "DF21_C0::FormFinding"
 
 # color the anchors red
-node_color = {node: (255, 0, 0) for node in network.nodes_where({'is_anchor': True})}
+node_color = {node: (255, 0, 0) for node in
+              network.nodes_where({'is_anchor': True})}
 
 artist.draw_nodes(color=node_color)
 artist.draw_edges()

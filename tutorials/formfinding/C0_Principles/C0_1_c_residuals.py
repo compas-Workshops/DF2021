@@ -58,7 +58,8 @@ layer = "DF21_C0::FormFinding"
 artist = NetworkArtist(network, layer=layer)
 
 # color the anchors red
-artist.draw_nodes(color={node: (255, 0, 0) for node in network.nodes_where({'is_anchor': True})})
+artist.draw_nodes(color={node: (255, 0, 0) for node in
+                  network.nodes_where({'is_anchor': True})})
 artist.draw_edges()
 
 # ==============================================================================
@@ -77,8 +78,8 @@ for node in network.nodes():
         color = (0, 255, 255)
     lines.append(
         {'start': start,
-        'end': end,
-        'arrow': 'end',
-        'color': color})
+         'end': end,
+         'arrow': 'end',
+         'color': color})
 
 compas_rhino.draw_lines(lines, layer=layer)
