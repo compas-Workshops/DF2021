@@ -23,6 +23,8 @@ vertex = mesh.vertices_on_boundary()[-5]
 
 plotter = MeshPlotter(mesh, figsize=(12, 7.5))
 plotter.defaults['vertex.fontsize'] = 8
+
 plotter.draw_faces()
 plotter.draw_vertices(facecolor={vertex: (255, 0, 0)}, radius=0.1)
+
 plotter.show()

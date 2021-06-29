@@ -9,8 +9,7 @@ net = Network.from_obj(FILE)
 
 node_color = {}
 for node in net.nodes():
-    nbrs = net.neighbors(node)
-    if len(nbrs) == 5:
+    if net.degree(node) == 5:
         node_color[node] = (255, 0, 0)
 
 plotter = NetworkPlotter(net, figsize=(12, 7.5))
