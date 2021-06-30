@@ -1,15 +1,16 @@
 # ==============================================================================
 # Import
 # ==============================================================================
+
 import os
 
-from compas.utilities import flatten
 from compas.datastructures import Mesh
 from compas_rhino.artists import MeshArtist
 
 # ==============================================================================
 # Initialise
 # ==============================================================================
+
 HERE = os.path.dirname(__file__)
 FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_refined.json')
 mesh = Mesh.from_json(FILE_I)
@@ -17,76 +18,44 @@ mesh = Mesh.from_json(FILE_I)
 # ==============================================================================
 # Select faces
 # ==============================================================================
-m_key = 67
-nbrs = mesh.vertex_neighbors(m_key)
 
-if len(nbrs) != 3:
-    raise ValueError("Vertex does not lie on the boundary.")
+vertex = 67
+nbrs = mesh.vertex_neighbors(vertex)
 
-edge_loops = []
-for nbr in nbrs:
-    edge_loop = []
-    if mesh.is_vertex_on_boundary(nbr) is True:
-        current, previous = (nbr, m_key)
-        edge_loop.append((previous, current))
+if not mesh.is_vertex_on_boundary(vertex):
+    raise Exception('The starting vertex should be on boundary.')
 
-        while True:
-            if current == m_key:
-                break
-            nbrs = mesh.vertex_neighbors(current)
-            if len(nbrs) == 2:
-                break
-            nbr = None
-            for temp in nbrs:
-                if temp == previous:
-                    continue
-                if mesh.is_edge_on_boundary(current, temp):
-                    nbr = temp
-                    break
-            if nbr is None:
-                break
-            previous, current = current, nbr
-            edge_loop.append((previous, current))
+nbr = None
+for temp in nbrs:
+    if not mesh.is_vertex_on_boundary(temp):
+        nbr = temp
+        break
 
-    edge_loops.append(edge_loop)
+if not nbr:
+    raise Exception('This is not possible.')
 
-edges_1 = edge_loops[0]
-edges_2 = edge_loops[1]
+edges = mesh.edge_loop((vertex, nbr))
 
-patch_1 = []
-patch_2 = []
+left = []
+right = []
 
-for start in edges_1:
-    strip = [mesh.edge_faces(*edge) for edge in mesh.edge_strip(start)]
-    strip[:] = list(set(flatten(strip)))
-    patch_1.extend(strip)
-
-for start in edges_2:
-    strip = [mesh.edge_faces(*edge) for edge in mesh.edge_strip(start)]
-    strip[:] = list(set(flatten(strip)))
-    patch_2.extend(strip)
+for u, v in edges:
+    left += [mesh.halfedge_face(*edge) for edge in mesh.halfedge_strip((u, v))][:-1]
+    right += [mesh.halfedge_face(*edge) for edge in mesh.halfedge_strip((v, u))][:-1]
 
 # ==============================================================================
 # Visualization
 # ==============================================================================
-edgecolor = {}
-for (u, v) in edges_1:
-    edgecolor[(u, v)] = (255, 0, 0)
-    edgecolor[(v, u)] = (255, 0, 0)
-
-for (u, v) in edges_2:
-    edgecolor[(u, v)] = (0, 255, 0)
-    edgecolor[(v, u)] = (0, 255, 0)
 
 facecolor = {}
-for face in patch_1:
+for face in left:
     facecolor[face] = (255, 200, 200)
 
-for face in patch_2:
+for face in right:
     facecolor[face] = (200, 255, 200)
 
 artist = MeshArtist(mesh, layer="DF21_D2::KnitPatch")
 artist.clear_layer()
 artist.draw_faces(color=facecolor)
-artist.draw_edges(color=edgecolor)
+# artist.draw_edges()
 # artist.draw_vertexlabels()

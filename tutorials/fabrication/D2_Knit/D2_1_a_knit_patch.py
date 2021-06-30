@@ -1,6 +1,7 @@
 # ==============================================================================
 # Import
 # ==============================================================================
+
 import os
 
 from compas.utilities import flatten
@@ -10,6 +11,7 @@ from compas_rhino.artists import MeshArtist
 # ==============================================================================
 # Initialise
 # ==============================================================================
+
 HERE = os.path.dirname(__file__)
 FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_refined.json')
 mesh = Mesh.from_json(FILE_I)
@@ -17,12 +19,12 @@ mesh = Mesh.from_json(FILE_I)
 # ==============================================================================
 # Set strip faces
 # ==============================================================================
+
 start = (30, 382)
 loop = mesh.edge_loop(start)
 # print(loop)
 strip = [mesh.edge_faces(*edge) for edge in mesh.edge_strip(start)]
 strip[:] = list(set(flatten(strip)))
-
 
 # ==============================================================================
 # Visualization
