@@ -5,7 +5,7 @@ import os
 
 from compas.geometry import Polygon, Polyline, Frame, Transformation
 from compas.geometry import offset_polyline, project_points_plane
-from compas.geometry import normalize_vector, scale_vector, cross_vectors
+from compas.geometry import normalize_vector, cross_vectors
 from compas.geometry import subtract_vectors, dot_vectors
 
 from compas.datastructures import Mesh
@@ -19,7 +19,7 @@ from compas_rhino.artists import PolygonArtist
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-FILE_I = os.path.join(HERE, '..', 'data', 'cablemesh_fofin_patch_reactions.json')
+FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch_reactions.json')
 # FILE_0 = os.path.join(HERE, 'corrugation_patches.json')
 
 mesh = Mesh.from_json(FILE_I)
@@ -67,13 +67,13 @@ polyline_o = polyline_o_T.transformed(T_xy_local)
 # join two polylines
 points_T = polyline_i_T.points + polyline_o_T.points[::-1]
 polygon_T = Polygon(points_T)
-polygonartist = PolygonArtist(polygon_T, layer="DF2021:: Beam:: Seam:: XY")
+polygonartist = PolygonArtist(polygon_T, layer="DF21_D3::Beam::Seam::XY")
 polygonartist.clear_layer()
 polygonartist.draw(show_points=False, show_edges=True, show_face=False)
 
 points = polyline.points + polyline_o.points[::-1]
 polygon = Polygon(points)
-polygonartist = PolygonArtist(polygon, layer="DF2021:: Beam:: Seam:: local")
+polygonartist = PolygonArtist(polygon, layer="DF21_D3::Beam::Seam::local")
 polygonartist.clear_layer()
 polygonartist.draw(show_points=False, show_edges=True, show_face=False)
 
@@ -85,9 +85,9 @@ for (u, v) in loop:
     edgecolor[(u, v)] = (0, 255, 0)
     edgecolor[(v, u)] = (0, 255, 0)
 
-artist = MeshArtist(mesh, layer="DF2021:: KnitPatch")
+artist = MeshArtist(mesh, layer="DF21_D3::KnitPatch")
 artist.clear_layer()
-#artist.draw()
-artist.draw_faces(faces=list(mesh.faces_where({'is_knit': True})),join_faces=True)
+# artist.draw()
+artist.draw_faces(faces=list(mesh.faces_where({'is_knit': True})), join_faces=True)
 artist.draw_edges(color=edgecolor)
-#artist.draw_vertexlabels()
+# artist.draw_vertexlabels()

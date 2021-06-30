@@ -3,7 +3,7 @@
 # ==============================================================================
 import os
 
-from compas.geometry import Polygon, Polyline, Frame, Transformation
+from compas.geometry import Polyline, Frame, Transformation
 from compas.geometry import offset_polyline, project_points_plane
 from compas.geometry import normalize_vector, scale_vector, cross_vectors
 from compas.geometry import subtract_vectors, dot_vectors, add_vectors
@@ -19,7 +19,7 @@ from compas_rhino.artists import MeshArtist
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-FILE_I = os.path.join(HERE, '..', 'data', 'cablemesh_fofin_patch_reactions.json')
+FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch_reactions.json')
 # FILE_0 = os.path.join(HERE, 'corrugation_patches.json')
 
 mesh = Mesh.from_json(FILE_I)
@@ -72,7 +72,7 @@ for i in range(length - 1):
     faces.append([i, i + 1, length + i + 1, length + i])
 beam_2d_T = Mesh.from_vertices_and_faces(vertices_T, faces)
 
-meshartist = MeshArtist(beam_2d_T, layer="DF2021:: Beam:: Seam:: local_mesh")
+meshartist = MeshArtist(beam_2d_T, layer="DF21_D3::Beam::Seam::local_mesh")
 meshartist.clear_layer()
 meshartist.draw_faces(join_faces=True)
 meshartist.draw_edges()
@@ -118,7 +118,7 @@ boundary.append(boundary[0])
 for a, b in pairwise(boundary):
     beam_3d.add_face([b, a, a + max_int_key, b + max_int_key])
 
-meshartist = MeshArtist(beam_3d, layer="DF2021:: Beam:: Seam:: local_mesh")
+meshartist = MeshArtist(beam_3d, layer="DF21_D3::Beam::Seam::local_mesh")
 #meshartist.clear_layer()
 meshartist.draw_faces(join_faces=True)
 meshartist.draw_edges()
@@ -128,9 +128,6 @@ meshartist.draw_edges()
 # ==============================================================================
 start = list(mesh.edges_where({'seam': True}))[0]
 loop = mesh.edge_loop(start)
-for (u, v) in loop: 
-
-
 
 
 # ==============================================================================
@@ -143,7 +140,7 @@ for (u, v) in loop:
 
 artist = MeshArtist(mesh, layer="DF2021:: KnitPatch")
 artist.clear_layer()
-#artist.draw()
-artist.draw_faces(faces=list(mesh.faces_where({'is_knit': True})),join_faces=True)
+# artist.draw()
+artist.draw_faces(faces=list(mesh.faces_where({'is_knit': True})), join_faces=True)
 artist.draw_edges(color=edgecolor)
-#artist.draw_vertexlabels()
+# artist.draw_vertexlabels()
