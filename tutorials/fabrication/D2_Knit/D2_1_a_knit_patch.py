@@ -3,6 +3,7 @@
 # ==============================================================================
 import os
 
+from compas.utilities import flatten
 from compas.datastructures import Mesh
 from compas_rhino.artists import MeshArtist
 
@@ -10,26 +11,36 @@ from compas_rhino.artists import MeshArtist
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch.json')
-FILE_01 = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch1.json')
-
+FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_refined.json')
 mesh = Mesh.from_json(FILE_I)
 
 # ==============================================================================
-# Patch1
+# Set strip faces
 # ==============================================================================
-mesh_1 = mesh.copy()
-mesh_1.name = "patch_1"
-for fkey in mesh.faces_where({'patch': 2}):
-    mesh_1.delete_face(fkey)
-mesh_1.remove_unused_vertices()
+start = (30, 382)
+loop = mesh.edge_loop(start)
+# print(loop)
+strip = [mesh.edge_faces(*edge) for edge in mesh.edge_strip(start)]
+strip[:] = list(set(flatten(strip)))
 
-mesh_1.to_json(FILE_01)
 
 # ==============================================================================
 # Visualization
 # ==============================================================================
-artist1 = MeshArtist(mesh_1, layer="DF2021_D1::KnitPatch")
-artist1.clear_layer()
-artist1.draw_faces(color={fkey: (255, 200, 200) for fkey in mesh.faces()})
-artist1.draw_edges()
+
+edgecolor = {}
+for (u, v) in loop:
+    edgecolor[(u, v)] = (0, 255, 0)
+    edgecolor[(v, u)] = (0, 255, 0)
+
+edgecolor[start] = (255, 0, 0)
+
+facecolor = {}
+for face in strip:
+    facecolor[face] = (255, 0, 0)
+
+artist = MeshArtist(mesh, layer="DF21_D2::KnitPatch")
+artist.clear_layer()
+artist.draw_faces(color=facecolor)
+artist.draw_edges(color=edgecolor)
+artist.draw_vertexlabels()

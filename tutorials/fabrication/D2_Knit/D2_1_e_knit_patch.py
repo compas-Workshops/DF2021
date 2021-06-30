@@ -44,7 +44,7 @@ for face in mesh.faces_where({'patch': 1}):
 for face in mesh.faces_where({'patch': 2}):
     facecolor[face] = (200, 255, 200)
 
-artist = MeshArtist(mesh, layer="DF2021_D1::KnitPatch")
+artist = MeshArtist(mesh, layer="DF21_D2::KnitPatch")
 artist.clear_layer()
 artist.draw_faces(color=facecolor)
 artist.draw_edges(color=edgecolor)

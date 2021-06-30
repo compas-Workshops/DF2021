@@ -18,7 +18,7 @@ mesh = Mesh.from_json(FILE_I)
 # ==============================================================================
 # Draw the initial mesh
 # ==============================================================================
-artist = MeshArtist(mesh, layer="DF2021_D1::KnitPatch")
+artist = MeshArtist(mesh, layer="DF2021_D2::KnitPatch")
 artist.clear_layer()
 artist.draw_faces(join_faces=True)
 guid_edges = artist.draw_edges()

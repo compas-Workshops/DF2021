@@ -64,12 +64,12 @@ mesh_2.to_json(FILE_02)
 # ==============================================================================
 # Visualization
 # ==============================================================================
-artist1 = MeshArtist(mesh_1, layer="DF2021_D1::KnitPatch1")
+artist1 = MeshArtist(mesh_1, layer="DF2021_D2::KnitPatch1")
 artist1.clear_layer()
 artist1.draw_faces(color={fkey: (255, 200, 200) for fkey in mesh.faces()})
 artist1.draw_edges()
 
-artist2 = MeshArtist(mesh_2, layer="DF2021_D1::KnitPatch2")
+artist2 = MeshArtist(mesh_2, layer="DF2021_D2::KnitPatch2")
 artist2.clear_layer()
 artist2.draw_faces(color={fkey: (200, 255, 200) for fkey in mesh.faces()})
 artist2.draw_edges()

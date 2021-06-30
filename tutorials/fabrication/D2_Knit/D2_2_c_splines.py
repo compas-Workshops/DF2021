@@ -4,16 +4,14 @@
 import os
 import math as m
 
-import compas_rhino
 from compas.datastructures import Mesh
-from compas_rhino.artists import MeshArtist
 
 # ==============================================================================
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-FILE_I1 = os.path.join(HERE, '..', 'data', 'cablemesh_fofin_patch1.json')
-FILE_I2 = os.path.join(HERE, '..', 'data', 'cablemesh_fofin_patch2.json')
+FILE_I1 = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch1.json')
+FILE_I2 = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch2.json')
 
 mesh_1 = Mesh.from_json(FILE_I1)
 mesh_2 = Mesh.from_json(FILE_I2)

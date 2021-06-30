@@ -13,14 +13,14 @@ from compas_rhino.artists import MeshArtist
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-FILE_I = os.path.join(HERE, '..', 'data', 'cablemesh_fofin_patch.json')
-FILE_O = os.path.join(HERE, '..', 'data', 'cablemesh_fofin_patch_reactions.json')
+FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch.json')
+FILE_O = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch_reactions.json')
 
 mesh = Mesh.from_json(FILE_I)
 mesh.update_default_vertex_attributes({'beam_pt': None})
 
 lines = []
-compas_rhino.clear_layer("DF2021:: KnitPatch:: Reactions")
+compas_rhino.clear_layer("DF2021_D2::KnitPatch::Reactions")
 
 edges = list(mesh.edges_where({'seam': True})) + list(mesh.edges_where({'bdr': 1})) + list(mesh.edges_where({'bdr': 2}))
 for (u, v) in edges:
@@ -31,9 +31,9 @@ for (u, v) in edges:
         end = subtract_vectors(xyz, residual)
         lines.append(
             {'start': xyz, 
-            'end': end, 
-            'arrow': 'end',
-            'color': (0, 255, 0)})
+             'end': end, 
+             'arrow': 'end',
+             'color': (0, 255, 0)})
         mesh.vertex_attribute(u, 'beam_pt', end)
 
     if mesh.vertex_attribute(v, 'beam_pt') is None:
@@ -43,13 +43,14 @@ for (u, v) in edges:
         end = subtract_vectors(xyz, residual)
         lines.append(
             {'start': xyz,
-            'end': end,
-            'arrow': 'end',
-            'color': (0, 255, 0)})
+             'end': end,
+             'arrow': 'end',
+             'color': (0, 255, 0)})
         mesh.vertex_attribute(v, 'beam_pt', end)
 
-print(len(lines))
 mesh.to_json(FILE_O)
+
+
 # ==============================================================================
 # Visualization
 # ==============================================================================
@@ -57,7 +58,6 @@ compas_rhino.draw_lines(lines, layer="DF2021:: KnitPatch:: Reactions")
 
 artist = MeshArtist(mesh, layer="DF2021:: KnitPatch:: Base")
 artist.clear_layer()
-#artist.draw()
 artist.draw_faces(join_faces=True)
 artist.draw_edges()
-#artist.draw_vertexlabels()
+# artist.draw_vertexlabels()
