@@ -2,7 +2,6 @@
 # Import
 # ==============================================================================
 import os
-import random
 
 from compas.geometry import Polyline, Frame, Transformation
 from compas.geometry import offset_polyline, project_points_plane
@@ -20,22 +19,21 @@ from compas_rhino.artists import PolylineArtist
 HERE = os.path.dirname(__file__)
 FILE_I = os.path.join(HERE, 'bridge_fofin_reactions.json')
 # FILE_0 = os.path.join(HERE, 'corrugation_patches.json')
-
 mesh = Mesh.from_json(FILE_I)
 
 
 proxy = Proxy('compas.geometry')
 bestfit = proxy.bestfit_frame_numpy
 
-#start = (1343, 1344)
-start= (638, 842)
+# start = (1343, 1344)
+start = (638, 842)
 
-bdr_beam_dis = 0.1 # offset distance, beam height
+bdr_beam_dis = 0.1  # offset distance, beam height
 beam_height = 0.1
 
 # find the edge loop
 loop = mesh.edge_loop(start)
-loop_vertices = list(flatten(loop)) # not chained
+loop_vertices = list(flatten(loop))  # not chained
 seen = set()
 loop_vertices = [x for x in loop_vertices if x not in seen and not seen.add(x)]
 

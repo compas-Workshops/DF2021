@@ -2,7 +2,6 @@
 # Import
 # ==============================================================================
 import os
-import random
 
 import compas_rhino
 from compas.datastructures import Mesh
@@ -35,7 +34,7 @@ for (u, v) in mesh.edges_where({'is_spline': True}):
             'start': sp,
             'end': ep,
             'radius': radius,
-            'color': (255, 0,0),
+            'color': (255, 0, 0),
             'name': "spline.{}-{}".format(u, v)
         })
 

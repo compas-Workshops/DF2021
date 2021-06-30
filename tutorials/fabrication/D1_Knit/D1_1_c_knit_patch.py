@@ -2,7 +2,6 @@
 # Import
 # ==============================================================================
 import os
-import random
 
 import compas_rhino
 from compas.utilities import flatten
@@ -13,14 +12,13 @@ from compas_rhino.artists import MeshArtist
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-FILE_I = os.path.join(HERE, '..', 'data', 'cablemesh_fofin_refined.json')
-
+FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_refined.json')
 mesh = Mesh.from_json(FILE_I)
 
 # ==============================================================================
 # Draw the initial mesh
 # ==============================================================================
-artist = MeshArtist(mesh, layer="DF2021:: KnitPatch")
+artist = MeshArtist(mesh, layer="DF2021_D1::KnitPatch")
 artist.clear_layer()
 artist.draw_faces(join_faces=True)
 guid_edges = artist.draw_edges()
@@ -31,13 +29,13 @@ edges_1 = []
 guid_edge = dict(zip(guid_edges, mesh.edges()))
 guids = compas_rhino.select_lines(message="Select edges for patch 1.")
 if guids:
-   for guid in guids:
-       if guid in guid_edge:
-           start = guid_edge[guid]
-           edges_1.append(start)
-           strip = [mesh.edge_faces(*edge) for edge in mesh.edge_strip(start)]
-           strip[:] = list(set(flatten(strip)))
-           patch_1.extend(strip)
+    for guid in guids:
+        if guid in guid_edge:
+            start = guid_edge[guid]
+            edges_1.append(start)
+            strip = [mesh.edge_faces(*edge) for edge in mesh.edge_strip(start)]
+            strip[:] = list(set(flatten(strip)))
+            patch_1.extend(strip)
 
 artist.clear_layer()
 artist.draw_faces(join_faces=True)
