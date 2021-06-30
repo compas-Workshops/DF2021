@@ -2,29 +2,19 @@
 # Import
 # ==============================================================================
 import os
-import random
+import compas_rhino
 
+from compas.geometry import Point
 from compas.datastructures import Mesh
-from compas.geometry import Point, Line
-from compas.geometry import normalize_vector, scale_vector, add_vectors
-from compas.utilities import flatten
-
-from compas_rhino.artists import MeshArtist, PointArtist, LineArtist
-from compas_rhino.artists import PolylineArtist
+from compas_rhino.artists import MeshArtist, PointArtist
 
 # ==============================================================================
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-FILE_I = os.path.join(HERE, '..', 'data', 'cablenmesh_fofin_patch1.json')
-FILE_O = os.path.join(HERE, '..', 'data', 'knit_patch1_feature.json')
+FILE_I = os.path.join(HERE, '..', 'data', 'cablenmesh_fofin_patch2.json')
 
 mesh = Mesh.from_json(FILE_I)
-
-bdr_points_dict = {}  # dictonary saves: key, original point; item, new point on
-bdr_patch_dis = 0.05
-
-mesh.update_default_face_attributes({'bdr_featrue': True, 'hook': False})
 
 vkey = mesh.get_any_vertex()
 nbr1 = mesh.vertex_neighbors(vkey)[0]
@@ -37,58 +27,29 @@ if len(loop1) > len(loop2):
 else:
     strips = mesh.edge_strip((vkey, nbr2))
 
+edgecolor = {}
+mesh.update_default_edge_attributes({'hook': False})
+compas_rhino.clear_layer("DF2021:: KnitPatch2:: Hook")
+
 for start in [strips[0], strips[-1]]:
     # find the edge loop
     loop = mesh.edge_loop(start)
-    bdr_faces = []
-
-    for (u, v) in loop:
-        if u not in bdr_points_dict.keys():
-            if mesh.vertex_degree(u) == 2:
-                rx, ry, rz = mesh.vertex_attributes(v, ('rx', 'ry', 'rz'))
-            else:
-                rx, ry, rz = mesh.vertex_attributes(u, ('rx', 'ry', 'rz'))
-            react_vec = normalize_vector([rx, ry, rz])
-            patch_dir = scale_vector(react_vec, -bdr_patch_dis)
-
-            xyz = mesh.vertex_coordinates(v)
-            new_key = mesh.add_vertex()
-            mesh.vertex_attributes(new_key, 'xyz', add_vectors(xyz, patch_dir))
-            bdr_points_dict[u] = new_key
-
-        if v not in bdr_points_dict.keys():
-            if mesh.vertex_degree(v) == 2:
-                rx, ry, rz = mesh.vertex_attributes(u, ('rx', 'ry', 'rz'))
-            else:
-                rx, ry, rz = mesh.vertex_attributes(v, ('rx', 'ry', 'rz'))
-            react_vec = normalize_vector([rx, ry, rz])
-            patch_dir = scale_vector(react_vec, -bdr_patch_dis)
-
-            xyz = mesh.vertex_coordinates(v)
-            new_key = mesh.add_vertex()
-            mesh.vertex_attributes(new_key, 'xyz', add_vectors(xyz, patch_dir))
-            bdr_points_dict[v] = new_key
-
-        fkey = mesh.add_face([u, v, bdr_points_dict[v], bdr_points_dict[u]], attr_dict={'bdr_featrue': False})
-        bdr_faces.append(fkey)
-
-    print(len(bdr_faces))
-    for i, fkey in enumerate(bdr_faces):
-        if i == 0 or i == len(bdr_faces) - 1 or i % 4 == 2:
-            mesh.face_attribute(fkey, 'hook', True)
-            face_center = Point(*mesh.face_centroid(fkey))
-            point_artist = PointArtist(face_center, color=(255, 0, 0), layer="DF2021:: Bdr_holes")
+    for i, (u, v) in enumerate(loop):
+        if i % 4 == 1 or i == 0 or i == len(loop) - 1: 
+            mesh.edge_attribute((u, v), 'hook', True)
+            edge_center = Point(*mesh.edge_midpoint(u, v))
+            print(edge_center)
+            point_artist = PointArtist(edge_center, color=(0, 255, 0), layer="DF2021:: KnitPatch2:: Hook")
             point_artist.draw()
-            
-mesh.to_json(FILE_O)
 
+mesh.to_json(FILE_I)
 # ==============================================================================
 # Visualization
 # ==============================================================================
 
-artist = MeshArtist(mesh, layer="DF2021:: KnitPatch1:: Knit")
+artist = MeshArtist(mesh, layer="DF2021:: KnitPatch2:: Knit")
 artist.clear_layer()
-artist.draw_faces(faces=list(mesh.faces_where({'bdr_featrue': True})),join_faces=True)
-artist.draw_edges()
+artist.draw_faces(join_faces=True)
+artist.draw_edges(color=edgecolor)
 # artist.draw_vertices()
 #artist.draw_vertexlabels()

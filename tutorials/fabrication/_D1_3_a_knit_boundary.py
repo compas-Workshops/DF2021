@@ -2,11 +2,13 @@
 # Import
 # ==============================================================================
 import os
+import random
 import compas_rhino
 
-from compas.geometry import Point
 from compas.datastructures import Mesh
-from compas_rhino.artists import MeshArtist, PointArtist
+from compas.geometry import subtract_vectors, normalize_vector
+
+from compas_rhino.artists import MeshArtist
 
 # ==============================================================================
 # Initialise
@@ -27,20 +29,34 @@ if len(loop1) > len(loop2):
 else:
     strips = mesh.edge_strip((vkey, nbr2))
 
-edgecolor = {}
-mesh.update_default_edge_attributes({'hook': False})
-compas_rhino.clear_layer("DF2021:: KnitPatch1:: Hook")
-
+lines = []
+seen = []
 for start in [strips[0], strips[-1]]:
     # find the edge loop
     loop = mesh.edge_loop(start)
-    for i, (u, v) in enumerate(loop):
-        if i % 4 == 0: 
-            mesh.edge_attribute((u, v), 'hook', True)
-            edge_center = Point(*mesh.edge_midpoint(u, v))
-            print(edge_center)
-            point_artist = PointArtist(edge_center, color=(255, 0, 0), layer="DF2021:: KnitPatch1:: Hook")
-            point_artist.draw()
+    for (u, v) in loop:
+        if u not in seen:
+            rx, ry, rz = mesh.vertex_attributes(u, ('rx', 'ry', 'rz'))
+            residual = normalize_vector([rx, ry, rz])
+            xyz = mesh.vertex_coordinates(u)
+            lines.append(
+                {'start': xyz,
+                'end': subtract_vectors(xyz, residual),
+                'arrow': 'end',
+                'color': (0, 255, 0)}) 
+            seen.append(u)
+
+        if v not in seen:
+            rx, ry, rz = mesh.vertex_attributes(v, ('rx', 'ry', 'rz'))
+            residual = normalize_vector([rx, ry, rz])
+            xyz = mesh.vertex_coordinates(v)
+            lines.append(
+                {'start': xyz,
+                'end': subtract_vectors(xyz, residual),
+                'arrow': 'end',
+                'color': (0, 255, 0)})
+            seen.append(v)
+
 
 # ==============================================================================
 # Visualization
@@ -48,7 +64,9 @@ for start in [strips[0], strips[-1]]:
 
 artist = MeshArtist(mesh, layer="DF2021:: KnitPatch1:: Knit")
 artist.clear_layer()
-artist.draw_faces(join_faces=True)
-artist.draw_edges(color=edgecolor)
+artist.draw_faces(faces=list(mesh.faces_where({'bdr_featrue': True})),join_faces=True)
+artist.draw_edges()
 # artist.draw_vertices()
 #artist.draw_vertexlabels()
+
+compas_rhino.draw_lines(lines, layer="DF2021:: KnitPatch1:: Reactions")

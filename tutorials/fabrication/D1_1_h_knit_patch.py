@@ -36,7 +36,7 @@ for fkey in mesh.faces_where({'patch': 1}):
 mesh_2.remove_unused_vertices()
 
 modified_vkeys = []
-seam_dis = 0.01
+seam_dis = 0.008
 
 for (u, v) in mesh_1.edges_where({'seam': True}):
     print(u)
