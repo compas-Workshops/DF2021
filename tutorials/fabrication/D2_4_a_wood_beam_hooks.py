@@ -27,7 +27,7 @@ mesh = Mesh.from_json(FILE_I)
 proxy = Proxy('compas.geometry')
 bestfit = proxy.bestfit_frame_numpy
 
-start = list(mesh.edges_where({'bdr': 2}))[0]
+start = list(mesh.edges_where({'seam': True}))[0]
 
 # find the edge loop
 loop = mesh.edge_loop(start)
@@ -72,7 +72,7 @@ for i in range(length - 1):
     faces.append([i, i + 1, length + i + 1, length + i])
 beam_2d_T = Mesh.from_vertices_and_faces(vertices_T, faces)
 
-meshartist = MeshArtist(beam_2d_T, layer="DF2021:: Beam:: Bdr2:: xy_mesh")
+meshartist = MeshArtist(beam_2d_T, layer="DF2021:: Beam:: Seam:: local_mesh")
 meshartist.clear_layer()
 meshartist.draw_faces(join_faces=True)
 meshartist.draw_edges()
@@ -118,10 +118,20 @@ boundary.append(boundary[0])
 for a, b in pairwise(boundary):
     beam_3d.add_face([b, a, a + max_int_key, b + max_int_key])
 
-meshartist = MeshArtist(beam_3d, layer="DF2021:: Beam:: Bdr2:: local_mesh")
-meshartist.clear_layer()
+meshartist = MeshArtist(beam_3d, layer="DF2021:: Beam:: Seam:: local_mesh")
+#meshartist.clear_layer()
 meshartist.draw_faces(join_faces=True)
 meshartist.draw_edges()
+
+# ==============================================================================
+# Hooks
+# ==============================================================================
+start = list(mesh.edges_where({'seam': True}))[0]
+loop = mesh.edge_loop(start)
+for (u, v) in loop: 
+
+
+
 
 # ==============================================================================
 # Visualization
