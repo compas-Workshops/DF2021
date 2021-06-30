@@ -7,9 +7,12 @@ FILE = os.path.join(HERE, 'faces.obj')
 
 mesh = Mesh.from_obj(FILE)
 
-plotter = MeshPlotter(mesh, figsize=(12, 7.5))
+vertex = mesh.vertices_on_boundary()[-4]
 
-plotter.draw_vertices(radius=0.2)
+plotter = MeshPlotter(mesh, figsize=(12, 7.5))
+plotter.defaults['vertex.fontsize'] = 8
+
 plotter.draw_faces()
+plotter.draw_vertices(facecolor={vertex: (255, 0, 0)}, radius=0.2)
 
 plotter.show()

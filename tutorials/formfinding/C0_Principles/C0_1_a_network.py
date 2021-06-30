@@ -41,3 +41,4 @@ node_color = {node: (255, 0, 0) for node in
 
 artist.draw_nodes(color=node_color)
 artist.draw_edges()
+artist.draw_nodelabels()

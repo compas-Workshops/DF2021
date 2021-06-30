@@ -4,15 +4,16 @@ from compas.datastructures import Network
 import compas_rhino
 from compas_rhino.artists import NetworkArtist
 
+
 # ==============================================================================
 # helpers > NEW
 # ==============================================================================
-
 
 def update_residuals(network):
     for node in network.nodes():
         A = network.node_attributes(node, 'xyz')
         R = [0, 0, 0]
+        
         for nbr in network.neighbors(node):
             B = network.node_attributes(nbr, 'xyz')
 
@@ -25,6 +26,7 @@ def update_residuals(network):
             R[0] += F * (B[0] - A[0]) / L
             R[1] += F * (B[1] - A[1]) / L
             R[2] += F * (B[2] - A[2]) / L
+
         network.node_attributes(node, ['rx', 'ry', 'rz'], R)
 
 
