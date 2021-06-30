@@ -68,7 +68,7 @@ for start in [(1332, 493), (948, 576), (638, 842)]:
     # check polyline direction
     polyline_vec = subtract_vectors(points[-1], points[0])
     cross_vec = cross_vectors(polyline_vec, zaxis_local)
-    if dot_vectors(cross_vec, [0, 0, 1]) <0:
+    if dot_vectors(cross_vec, [0, 0, 1]) < 0:
         zaxis_local = scale_vector(zaxis_local, -1)
     print(zaxis_local)
 

@@ -29,7 +29,7 @@ bestfit = proxy.bestfit_frame_numpy
 #start = (1343, 1344)
 start= (638, 842)
 
-bdr_beam_dis = 0.1 # offset distance, beam height
+bdr_beam_dis = 0.45 # offset distance, beam height
 beam_height = 0.1
 
 # find the edge loop
@@ -79,7 +79,7 @@ polyline_o_T = polyline_o.transformed(T)
 # join two polylines
 points = polyline_i_T.points + polyline_o_T.points[::-1]
 
-polyartist=  PolylineArtist(polyline_i_T, layer="DF2021:: Arch")
+polyartist = PolylineArtist(polyline_i_T, layer="DF2021:: Arch")
 polyartist.clear_layer()
 polyartist.draw(show_points=True)
 

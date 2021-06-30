@@ -59,7 +59,7 @@ zaxis_local = normalize_vector(cross_vectors(xaxis_local, yaxis_local))
 # check polyline direction
 polyline_vec = subtract_vectors(points[-1], points[0])
 cross_vec = cross_vectors(polyline_vec, zaxis_local)
-if dot_vectors(cross_vec, [0, 0, 1]) <0:
+if dot_vectors(cross_vec, [0, 0, 1]) < 0:
     zaxis_local = scale_vector(zaxis_local, -1)
 print(zaxis_local)
 
@@ -77,16 +77,16 @@ polyline_o_T = polyline_o.transformed(T)
 # xy_points = project_points_plane(points, ([0, 0, 0], [0, 0, 1]))
 # polyline_T = Polyline(xy_points)
 
-polyartist=  PolylineArtist(polyline_i_T, layer="DF2021:: Beam")
+polyartist = PolylineArtist(polyline_i_T, layer="DF2021:: Beam")
 polyartist.clear_layer()
 polyartist.draw(show_points=True)
 
-polyartist2=  PolylineArtist(polyline_o_T, layer="DF2021:: Beam")
+polyartist2 = PolylineArtist(polyline_o_T, layer="DF2021:: Beam")
 polyartist2.draw(show_points=True)
 
 edgecolor = {}
 for (u, v) in loop:
-    edgecolor[(u,v)] = (0, 255, 0)
+    edgecolor[(u, v)] = (0, 255, 0)
     edgecolor[(v, u)] = (0, 255, 0)
 # ==============================================================================
 # Visualization

@@ -69,10 +69,10 @@ print(zaxis_local)
 polyline_o = Polyline(offset_polyline(polyline, -beam_height, zaxis_local))
 
 # generate 2d mesh
-vertices = polyline.points + polyline_o.points 
+vertices = polyline.points + polyline_o.points
 faces = []
 length = len(polyline.points)
-for i in range(length - 1) :
+for i in range(length - 1):
     faces.append([i, i + 1, length + i + 1, length + i])
 beam_2d = Mesh.from_vertices_and_faces(vertices, faces)
 # copy
