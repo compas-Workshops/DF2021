@@ -4,7 +4,6 @@
 
 import os
 
-from compas.utilities import flatten
 from compas.datastructures import Mesh
 from compas_rhino.artists import MeshArtist
 
@@ -20,11 +19,9 @@ mesh = Mesh.from_json(FILE_I)
 # Set strip faces
 # ==============================================================================
 
-start = (30, 382)
-loop = mesh.edge_loop(start)
-# print(loop)
-strip = [mesh.edge_faces(*edge) for edge in mesh.edge_strip(start)]
-strip[:] = list(set(flatten(strip)))
+loop = mesh.edge_loop((67, 510))
+left = [mesh.halfedge_face(*edge) for edge in mesh.halfedge_strip((67, 510))][:-1]
+right = [mesh.halfedge_face(*edge) for edge in mesh.halfedge_strip((510, 67))][:-1]
 
 # ==============================================================================
 # Visualization
@@ -32,14 +29,15 @@ strip[:] = list(set(flatten(strip)))
 
 edgecolor = {}
 for (u, v) in loop:
-    edgecolor[(u, v)] = (0, 255, 0)
-    edgecolor[(v, u)] = (0, 255, 0)
+    edgecolor[(u, v)] = edgecolor[(v, u)] = (0, 255, 255)
 
-edgecolor[start] = (255, 0, 0)
+edgecolor[(67, 510)] = (0, 0, 255)
 
 facecolor = {}
-for face in strip:
+for face in left:
     facecolor[face] = (255, 0, 0)
+for face in right:
+    facecolor[face] = (0, 255, 0)
 
 artist = MeshArtist(mesh, layer="DF21_D2::KnitPatch")
 artist.clear_layer()
