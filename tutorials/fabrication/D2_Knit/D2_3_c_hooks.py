@@ -18,16 +18,6 @@ FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch1.json')
 mesh = Mesh.from_json(FILE_I)
 
 # ==============================================================================
-# Process
-# ==============================================================================
-
-for u, v in mesh.edges():
-    if mesh.edge_attribute((u, v), 'hook'):
-        point = Point(*mesh.edge_midpoint(u, v))
-        point_artist = PointArtist(point, color=(0, 255, 0), layer="DF21_D2::KnitPatch::Hooks")
-        point_artist.draw()
-
-# ==============================================================================
 # Visualization
 # ==============================================================================
 
@@ -35,3 +25,8 @@ artist = MeshArtist(mesh, layer="DF21_D2::KnitPatch1")
 artist.clear_layer()
 artist.draw_faces(color={fkey: (255, 200, 200) for fkey in mesh.faces()})
 artist.draw_edges()
+
+for u, v in mesh.edges_where({'hook': True}):
+    point = Point(*mesh.edge_midpoint(u, v))
+    artist = PointArtist(point, color=(0, 255, 0), layer="DF21_D2::KnitPatch1::Hooks")
+    artist.draw()
