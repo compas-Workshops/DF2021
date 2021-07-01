@@ -28,5 +28,5 @@ artist.draw_edges()
 
 for u, v in mesh.edges_where({'hook': True}):
     point = Point(*mesh.edge_midpoint(u, v))
-    artist = PointArtist(point, color=(0, 255, 0), layer="DF21_D2::KnitPatch1::Hooks")
+    artist = PointArtist(point, color=(255, 0, 0), layer="DF21_D2::KnitPatch1::Hooks")
     artist.draw()
