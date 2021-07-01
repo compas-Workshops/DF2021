@@ -2,18 +2,20 @@
 # Import
 # ==============================================================================
 import os
+import compas_rhino
 
-from compas.geometry import Polyline, Frame, Transformation
+from compas.geometry import Polyline, Frame, Transformation, Point
 from compas.geometry import offset_polyline, project_points_plane
 from compas.geometry import normalize_vector, scale_vector, cross_vectors
 from compas.geometry import subtract_vectors, dot_vectors, add_vectors
+from compas.geometry import intersection_ray_mesh
 
 from compas.datastructures import Mesh
 from compas.datastructures import mesh_flip_cycles
 from compas.utilities import flatten, pairwise
 from compas.rpc import Proxy
 
-from compas_rhino.artists import MeshArtist
+from compas_rhino.artists import MeshArtist, PointArtist
 
 # ==============================================================================
 # Initialise
@@ -128,8 +130,26 @@ meshartist.draw_edges()
 # ==============================================================================
 start = list(mesh.edges_where({'seam': True}))[0]
 loop = mesh.edge_loop(start)
+lines = []
 
+for (u, v) in loop: 
+    if mesh.edge_attribute((u, v), 'hook') is True:
+        hook = mesh.edge_midpoint(u, v)
+        u_beam = mesh.vertex_attribute(u, 'beam_pt')
+        v_beam = mesh.vertex_attribute(v, 'beam_pt')
+        hook_beam = [(a + b) / 2 for a, b in zip(u_beam, v_beam)]
+        
+        artist = PointArtist(Point(*hook_beam), color=(0, 255, 0), layer="DF21_D3::Beam::Seam::Hooks")
+        artist.draw()
+        artist = PointArtist(Point(*hook_beam).transformed(T_local_xy), color=(0, 255, 0), layer="DF21_D3::Beam::Seam::Hooks_xy")
+        artist.draw()
+        
+        lines.append(
+            {'start': hook, 
+             'end': hook_beam, 
+             'color': (0, 0, 0)})
 
+compas_rhino.draw_lines(lines, layer="DF21_D3::Beam::Seam::Zipties")
 # ==============================================================================
 # Visualization
 # ==============================================================================
