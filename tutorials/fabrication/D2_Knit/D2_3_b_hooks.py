@@ -16,11 +16,11 @@ FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch.json')
 
 mesh = Mesh.from_json(FILE_I)
 
-corner_vkey = None
-for vkey in mesh.vertices():
-    if mesh.vertex_degree(vkey) == 2:
-        corner_vkey = vkey
-        break
+# ==============================================================================
+# Process
+# ==============================================================================
+
+corner_vkey = list(mesh.vertices_where({'degree': 2}))[0]
 
 nbrs = mesh.vertex_neighbors(corner_vkey)
 
@@ -37,8 +37,7 @@ compas_rhino.clear_layer("DF21_D2::KnitPatch::Hooks")
 
 edgecolor = {}
 for edge in stripes:
-    if (mesh.edge_attribute(edge, 'seam')
-       or mesh.edge_attribute(edge, 'bdr') is not None):
+    if (mesh.edge_attribute(edge, 'seam') or mesh.edge_attribute(edge, 'bdr') is not None):
         loop = mesh.edge_loop(edge)
         for i, (u, v) in enumerate(loop):
             # visualize the edges
@@ -49,8 +48,7 @@ for edge in stripes:
                 edge_center = Point(*mesh.edge_midpoint(u, v))
                 mesh.edge_attribute((u, v), 'hook', True)
                 print(edge_center)
-                point_artist = PointArtist(edge_center, color=(0, 255, 0),
-                                           layer="DF21_D2::KnitPatch::Hooks")
+                point_artist = PointArtist(edge_center, color=(0, 255, 0), layer="DF21_D2::KnitPatch::Hooks")
                 point_artist.draw()
 
 mesh.to_json(FILE_I)

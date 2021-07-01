@@ -1,6 +1,7 @@
 # ==============================================================================
 # Import
 # ==============================================================================
+
 import os
 
 from compas.datastructures import Mesh
@@ -9,6 +10,7 @@ from compas_rhino.artists import MeshArtist
 # ==============================================================================
 # Initialise
 # ==============================================================================
+
 HERE = os.path.dirname(__file__)
 FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch.json')
 FILE_01 = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch1.json')
@@ -19,6 +21,7 @@ mesh = Mesh.from_json(FILE_I)
 # ==============================================================================
 # Patches
 # ==============================================================================
+
 mesh_1 = mesh.copy()
 mesh_2 = mesh.copy()
 mesh_1.name = "patch_1"
@@ -32,31 +35,35 @@ for fkey in mesh.faces_where({'patch': 1}):
     mesh_2.delete_face(fkey)
 mesh_2.remove_unused_vertices()
 
-modified_vkeys = []
 seam_dis = 0.008
 
-for (u, v) in mesh_1.edges_where({'seam': True}):
+seen = []
+for u, v in mesh_1.edges_where({'seam': True}):
     print(u)
-    if u not in modified_vkeys:
+
+    if u not in seen:
         u_x = mesh_1.vertex_attribute(u, 'x')
         mesh_1.vertex_attribute(u, 'x', u_x - seam_dis)
-        modified_vkeys.append(u)
-    if v not in modified_vkeys:
+        seen.append(u)
+
+    if v not in seen:
         v_x = mesh_1.vertex_attribute(v, 'x')
         mesh_1.vertex_attribute(v, 'x', v_x - seam_dis)
-        modified_vkeys.append(v)
+        seen.append(v)
 
-modified_vkeys = []
+seen = []
 for (u, v) in mesh_2.edges_where({'seam': True}):
     print(u)
-    if u not in modified_vkeys:
+
+    if u not in seen:
         u_x = mesh_2.vertex_attribute(u, 'x')
         mesh_2.vertex_attribute(u, 'x', u_x + seam_dis)
-        modified_vkeys.append(u)
-    if v not in modified_vkeys:
+        seen.append(u)
+
+    if v not in seen:
         v_x = mesh_2.vertex_attribute(v, 'x')
         mesh_2.vertex_attribute(v, 'x', v_x + seam_dis)
-        modified_vkeys.append(v)
+        seen.append(v)
 
 mesh_1.to_json(FILE_01)
 mesh_2.to_json(FILE_02)
@@ -64,6 +71,7 @@ mesh_2.to_json(FILE_02)
 # ==============================================================================
 # Visualization
 # ==============================================================================
+
 artist1 = MeshArtist(mesh_1, layer="DF2021_D2::KnitPatch1")
 artist1.clear_layer()
 artist1.draw_faces(color={fkey: (255, 200, 200) for fkey in mesh.faces()})
