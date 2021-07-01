@@ -12,7 +12,7 @@ from compas_rhino.artists import MeshArtist, PointArtist
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch2.json')
+FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch.json')
 
 mesh = Mesh.from_json(FILE_I)
 
@@ -35,6 +35,7 @@ strip = mesh.edge_strip(start)
 
 boundary1 = mesh.edge_loop(strip[0])
 boundary2 = mesh.edge_loop(strip[-1])
+seam = mesh.edge_loop(strip[len(strip) // 2])
 
 mesh.update_default_edge_attributes({'hook': False})
 
@@ -43,6 +44,10 @@ for i, edge in enumerate(boundary1):
         mesh.edge_attribute(edge, 'hook', True)
 
 for i, edge in enumerate(boundary2):
+    if i % 4 == 1 or i == 0 or i == len(boundary2) - 1:
+        mesh.edge_attribute(edge, 'hook', True)
+
+for i, edge in enumerate(seam):
     if i % 4 == 1 or i == 0 or i == len(boundary2) - 1:
         mesh.edge_attribute(edge, 'hook', True)
 
@@ -60,12 +65,12 @@ for u, v in boundary1:
 for u, v in boundary2:
     edgecolor[(u, v)] = edgecolor[(v, u)] = (0, 255, 0)
 
-artist = MeshArtist(mesh, layer="DF21_D2::KnitPatch1")
+artist = MeshArtist(mesh, layer="DF21_D2::KnitPatch")
 artist.clear_layer()
 artist.draw_faces(join_faces=True)
 artist.draw_edges(color=edgecolor)
 
 for edge in mesh.edges_where({'hook': True}):
     point = Point(*mesh.edge_midpoint(*edge))
-    artist = PointArtist(point, color=(0, 255, 0), layer="DF21_D2::KnitPatch1::Hooks")
+    artist = PointArtist(point, color=(0, 255, 0), layer="DF21_D2::KnitPatch::Hooks")
     artist.draw()
