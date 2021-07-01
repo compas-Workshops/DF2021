@@ -22,7 +22,7 @@ mesh = Mesh.from_json(FILE_I)
 # ==============================================================================
 
 for u, v in mesh.edges():
-    if mesh.edge_attribute((u, v), 'hook') is True:
+    if mesh.edge_attribute((u, v), 'hook'):
         point = Point(*mesh.edge_midpoint(u, v))
         point_artist = PointArtist(point, color=(0, 255, 0), layer="DF21_D2::KnitPatch::Hooks")
         point_artist.draw()
