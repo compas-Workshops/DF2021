@@ -1,6 +1,7 @@
 # ==============================================================================
 # Import
 # ==============================================================================
+
 import os
 
 from compas.geometry import normalize_vector, subtract_vectors
@@ -12,6 +13,7 @@ from compas_rhino.artists import MeshArtist
 # ==============================================================================
 # Initialise
 # ==============================================================================
+
 HERE = os.path.dirname(__file__)
 FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch.json')
 FILE_O = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_patch_reactions.json')

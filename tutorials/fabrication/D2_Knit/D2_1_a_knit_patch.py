@@ -20,6 +20,7 @@ mesh = Mesh.from_json(FILE_I)
 # ==============================================================================
 
 loop = mesh.edge_loop((67, 510))
+
 left = [mesh.halfedge_face(*edge) for edge in mesh.halfedge_strip((67, 510))][:-1]
 right = [mesh.halfedge_face(*edge) for edge in mesh.halfedge_strip((510, 67))][:-1]
 

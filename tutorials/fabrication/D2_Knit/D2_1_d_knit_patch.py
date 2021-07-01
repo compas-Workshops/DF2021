@@ -21,22 +21,7 @@ mesh = Mesh.from_json(FILE_I)
 # Select faces
 # ==============================================================================
 
-vertex = 67
-nbrs = mesh.vertex_neighbors(vertex)
-
-if not mesh.is_vertex_on_boundary(vertex):
-    raise Exception('The starting vertex should be on boundary.')
-
-nbr = None
-for temp in nbrs:
-    if not mesh.is_vertex_on_boundary(temp):
-        nbr = temp
-        break
-
-if not nbr:
-    raise Exception('This is not possible.')
-
-edges = mesh.edge_loop((vertex, nbr))
+edges = mesh.edge_loop((67, 510))
 
 left = []
 right = []
