@@ -5,7 +5,7 @@ import os
 
 from compas.datastructures import Mesh
 from compas.datastructures import mesh_flip_cycles
-from compas.geometry import add_vectors
+from compas.geometry import add_vectors, scale_vector
 from compas.utilities import pairwise
 
 from compas_rhino.artists import MeshArtist
@@ -14,7 +14,7 @@ from compas_rhino.artists import MeshArtist
 # Initialise
 # ==============================================================================
 HERE = os.path.dirname(__file__)
-FILE_I = os.path.join(HERE, 'bridge_fofin_reactions.json')
+FILE_I = os.path.join(HERE, '../..', 'data', 'cablemesh_fofin_refined.json')
 # FILE_O = os.path.join(HERE, 'bridge_fofin_add_patch.json')
 
 mesh = Mesh.from_json(FILE_I)
